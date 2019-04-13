@@ -60,17 +60,23 @@ set (SRC_GSPAN
    src-gspan/misc.cpp
 )
 
+set (SRC_MEX_REPLACEMENT
+   src-my-mex/mex.h
+)
+
 project(gboost)
 
 add_executable(gboost
    ${SRC_GRAPHMATCH}
    ${SRC_GSPAN}
+   ${SRC_MEX_REPLACEMENT}
 )
 
 include_directories(gboost
    src-graphmatch/vflib-2.0/inc/
    src-graphmatch/
    src-gspan/
+   src-my-mex/
 )
 
 set_target_properties(gboost PROPERTIES COMPILE_OPTIONS "-Wall" "--std=c++11" "-g")
