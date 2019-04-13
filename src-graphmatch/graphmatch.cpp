@@ -129,7 +129,7 @@ static std::vector<unsigned int*> elist_ptr;
 
 /* [count, associations] = graphmatch (subg1, g2);
  */
-void
+inline void
 mexFunction (int nlhs, mxArray *plhs[],
 	int nrhs, const mxArray *prhs[])
 {
