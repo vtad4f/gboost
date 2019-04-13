@@ -1,3 +1,3 @@
 
-Run example.m
+Run example.py
 
