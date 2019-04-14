@@ -1,3 +1,5 @@
+
+
 def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax, boostType):
    """
       gSpan frequent graph substructure algorithm.
@@ -83,7 +85,7 @@ def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax
       if v ~= 1:
          error(['Graph ', str(i), ': ', r]))
    if size(G,2) == 1:
-      G=G'	# put it as row.
+      G=G'   # put it as row.
 
    if nargin > 3:
       print(' '.join(['Starting gspan-boost run...']))

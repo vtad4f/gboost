@@ -1,4 +1,6 @@
-   def rocscore (Yreal, Ytrue):
+
+
+def rocscore (Yreal, Ytrue):
    """
       Compute the ROC AUC (area under curve) score, the ROC EER (equal error rate)
       and the ROC curve itself from given classifier data.
@@ -14,20 +16,20 @@
       eer: Equal Error Rate (EER), TP at the point where TP==(1-FP).
       roccurve: (n,2) roc curve data, first column: FP, second row TP.
    """
-   dsorted,idx=sort(Yreal,1,'descend')	# Higher values first
+   dsorted,idx=sort(Yreal,1,'descend')   # Higher values first
    L_pos=find(Ytrue==1)
    L_neg=find(Ytrue==-1)
 
    roccurve=zeros(len(dsorted),2)
    fp_rate_last=0
-   eer_res_min=Inf	# EER residue minimum
-   eer_min_idx=-1		# ROC curve index realizing minimal tp==(1-fp)
+   eer_res_min=Inf   # EER residue minimum
+   eer_min_idx=-1      # ROC curve index realizing minimal tp==(1-fp)
 
    i=1
    c=1
    eer=-1
    while i <= len(dsorted)
-      tr=dsorted(i)	# Obtain threshold
+      tr=dsorted(i)   # Obtain threshold
 
       # Check if there is more than one sample qualifying with the same value
       similar=0

@@ -1,3 +1,5 @@
+
+
 def findhypothesis_graph (X, Y, u, beta, max_col, htype):
    """
       Graph boosting stump generator
@@ -43,12 +45,12 @@ def findhypothesis_graph (X, Y, u, beta, max_col, htype):
          h[i]=[] # TODO - set to struct?
          h[i].h = lambda G: graph_stump_classifier (G, subg[i], ybase[i], htype) # TODO - does i change?
          h[i].hi = subg[i]
-         h[i].GY = GY(:,i)	# subgraph response on training data # TODO - slicing?
+         h[i].GY = GY(:,i)   # subgraph response on training data # TODO - slicing?
          h[i].GY(find(h[i].GY))=1
          if htype == 2:
             h[i].GY(find(h[i].GY == 0))=-1
             h[i].GY = ybase[i]*h[i].GY
-         #h[i].GY(find(h[i].GY)) = count[i]	# Convert counts to flags
+         #h[i].GY(find(h[i].GY)) = count[i]   # Convert counts to flags
    return h
    
    
@@ -65,7 +67,7 @@ def graph_stump_classifier (G, subg, ybase, htype):
          if count > 0:
             y[i] = ybase
          else:
-            y[i] = 0	# Output zero in case pattern wasn't found
+            y[i] = 0   # Output zero in case pattern wasn't found
       # Complementary-closed classifier that can return negative outputs for
       # 2-class LPBoosting.
       elif htype == 2:
@@ -74,6 +76,5 @@ def graph_stump_classifier (G, subg, ybase, htype):
          else:
             y[i] = -ybase
    return y
-   
    
    

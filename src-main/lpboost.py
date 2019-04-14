@@ -1,3 +1,5 @@
+
+
 def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
    """
       1.5/2-class LP Boosting,
@@ -93,9 +95,9 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
    else:
       u = [(1/l1)*0.5*ones(l1,1)]
 
-   alpha=[]	# The classifier weights
-   H=[]		# The hypothesis functions
-   HI=[]		# The hypothesis information
+   alpha=[]   # The classifier weights
+   H=[]      # The hypothesis functions
+   HI=[]      # The hypothesis information
    Ytrain=zeros(l,1)
    rho=[0 0]
 
@@ -219,7 +221,7 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
          rho = opt_rho
 
       alpha = opt_alpha
-       theta = -cvx_optval	# primal: min, dual: max, gamma = - (dual result)
+       theta = -cvx_optval   # primal: min, dual: max, gamma = - (dual result)
 
        u = zeros(l,1)
        for k in range(1, l1 + 1):
@@ -288,7 +290,7 @@ def cfun (X, classifier):
          (optional) GY: (n,q) classifier outputs.
    """
    if size(X,1) == 1:
-      X = X'	# Bring X in column form
+      X = X'   # Bring X in column form
    n = size(X,1)
 
    # Compute the real classification outputs as weighted sum of the individual
