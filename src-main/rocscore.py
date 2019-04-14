@@ -50,13 +50,10 @@ def rocscore (Yreal, Ytrue):
 
       # Do linear interpolation on the previous line segment to find the EER
       if c > 1:
-         alpha = (1-roccurve(c-1,1)-roccurve(c-1,2)) / ...
-            (roccurve(c,2)-roccurve(c-1,2)+roccurve(c,1)-roccurve(c-1,1))
+         alpha = (1-roccurve(c-1,1)-roccurve(c-1,2)) / (roccurve(c,2)-roccurve(c-1,2)+roccurve(c,1)-roccurve(c-1,1))
 
          if alpha >= 0 and alpha <= 1:
-            eerpoint=[roccurve(c-1,2) roccurve(c-1,1)] + ...
-               alpha*[roccurve(c,2)-roccurve(c-1,2)  ...
-               roccurve(c,1)-roccurve(c-1,1)]
+            eerpoint=[roccurve(c-1,2) roccurve(c-1,1)] + alpha*[roccurve(c,2)-roccurve(c-1,2)  roccurve(c,1)-roccurve(c-1,1)]
 
             eer = eerpoint(1,1)
 

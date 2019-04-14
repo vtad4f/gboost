@@ -1,5 +1,9 @@
 
 
+import matrix
+import slicing
+
+
 def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
    """
       1.5/2-class LP Boosting,
@@ -80,9 +84,9 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
       if size(X,1) == 1:
          X=X(I)
       else:
-         X=X(I,:)
+         X=slicing.GetRange(X, I, ':')
    else:
-      I=1:size(Y,1)
+      I = range(1, size(Y,1) + 1)
 
    l1 = len(find(Y >= 0))
    l2 = len(find(Y < 0))
@@ -91,7 +95,7 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
 
    theta = 0
    if l2 > 0:
-      u = [(1/l1)*0.5*ones(l1,1)  (1/l2)*0.5*ones(l2,1)]
+      u = [(1/l1)*0.5*ones(l1,1), (1/l2)*0.5*ones(l2,1)]
    else:
       u = [(1/l1)*0.5*ones(l1,1)]
 
@@ -99,16 +103,16 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
    H=[]      # The hypothesis functions
    HI=[]      # The hypothesis information
    Ytrain=zeros(l,1)
-   rho=[0 0]
+   rho=[0, 0]
 
    iter = 1
    HM = zeros(l,0)
-   while true
+   while True:
       print(' '.join(['LPBoost iter ', str(iter)]))
       m = m + 1
 
       # Select best new hypothesis for weighted training samples
-      [h] = findhypothesis_1 (X, Y, u, theta, max_col)
+      h = findhypothesis_1 (X, Y, u, theta, max_col)
       if len(h) > 0:
          # Find the maximum gain hypothesis, as h is possibly unordered, we
          # first search for the  maximum gain hypothesis.
@@ -119,35 +123,29 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
          # LPBoosting).
          oval = -Inf
          for i in range(1, len(h) + 1):
-            oval_cur = (u.*Y)'*h{i}.GY(:,1)
-            #print(' '.join(['   hypothesis ', str(i), ': ', str(oval_cur)]))
+            oval_cur = matrix.Transpose(matrix.EWProduct(u, Y)) * slicing.GetRange(h[i].GY, ':', 1)
             if oval_cur > oval:
                oval = oval_cur
-         #oval = (u.*Y)'*h{1}.h(X)
-         print(' '.join(['   optimality: ', str(oval), ' <= ', str(theta), ' + ', ...
-            str(conv_epsilon), ' ?']))
+         print(' '.join(['   optimality: ', str(oval), ' <= ', str(theta), ' + ', str(conv_epsilon), ' ?']))
 
       # Stopping condition: either no hypotheses are there anymore or best
       # hypothesis gain is too small.
-       if len(h) == 0 or oval <= (theta + conv_epsilon):
+      if len(h) == 0 or oval <= (theta + conv_epsilon):
          print(' '.join(['LPBoost optimality reached after ', str(iter), ' iterations.']))
 
          if len(h) == 0:
             print(' '.join(['   (no hypotheses left)']))
          else:
             print(' '.join(['   (no improvements left)']))
-           m = m - 1
-           break
+         m = m - 1
+         break
 
       # Update combined hypothesis and restricted master problem
       for i in range(1, len(h) + 1):
-         H{m+i-1} = h{i}.h
-         HI{m+i-1} = h{i}.hi
-         #HM(:,m+i-1) = h{i}.h(X)
-         HM(:,m+i-1) = h{i}.GY(:,1)
+         H[m+i-1] = h[i].h
+         HI[m+i-1] = h[i].hi
+         slicing.SetRange(HM, ':', m+i-1, slicing.GetRange(h[i].GY, ':', 1))
       m = m + len(h) - 1
-
-      #print(' '.join(['   output: ', str(HM(:,m)')]))
 
       # Solve the LPBoosting formulation (see [Demiriz2002] for the 2-class
       # formulation).
@@ -157,39 +155,41 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
          # thus only the presence of features can be used as indication for a
          # class decision, not their absence.
          print(' '.join(['1.5-class LPBoosting']))
-         cvx_begin
-            variables opt_alpha(m) opt_rho1(1) opt_rho2(1) opt_xi1(l1) opt_xi2(l2)
-            dual variables d_u1{l1} d_u2{l2}
-            minimize (-opt_rho1 + opt_rho2 + sum(opt_xi1)/(l1*nu) + sum(opt_xi2)/(l2*nu))
-               for k in range(1, l1 + 1):
-                  HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k}
-               for k in range(1, l2 + 1):
-                  HM(l1+k,:)*opt_alpha - opt_rho2 - opt_xi2(k) <= 0 : d_u2{k}
-               sum(opt_alpha) == 1
-               opt_alpha >= 0
-               opt_xi1 >= 0
-               opt_xi2 >= 0
-               opt_rho1 >= 0
-               opt_rho2 >= 0
-         cvx_end
+         
+         # cvx_begin - TODO
+            # variables opt_alpha(m) opt_rho1(1) opt_rho2(1) opt_xi1(l1) opt_xi2(l2)
+            # dual variables d_u1{l1} d_u2{l2}
+            # minimize (-opt_rho1 + opt_rho2 + sum(opt_xi1)/(l1*nu) + sum(opt_xi2)/(l2*nu))
+               # for k in range(1, l1 + 1):
+                  # HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k}
+               # for k in range(1, l2 + 1):
+                  # HM(l1+k,:)*opt_alpha - opt_rho2 - opt_xi2(k) <= 0 : d_u2{k}
+               # sum(opt_alpha) == 1
+               # opt_alpha >= 0
+               # opt_xi1 >= 0
+               # opt_xi2 >= 0
+               # opt_rho1 >= 0
+               # opt_rho2 >= 0
+         # cvx_end
 
          rho1 = opt_rho1
          rho2 = opt_rho2
-         rho = [rho1 rho2]
+         rho = [rho1, rho2]
       elif boosting_type == 1 and l2 == 0:
          # 1-class LPBoosting
          print(' '.join(['1-class LPBoosting']))
-         cvx_begin
-            variables opt_alpha(m) opt_rho1(1) opt_xi1(l1)
-            dual variables d_u1{l1}
-            minimize (-opt_rho1 + sum(opt_xi1)/(l1*nu))
-               for k in range(1, l1 + 1):
-                  HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k}
-               sum(opt_alpha) == 1
-               opt_alpha >= 0
-               opt_xi1 >= 0
-               opt_rho1 >= 0
-         cvx_end
+         
+         # cvx_begin - TODO
+            # variables opt_alpha(m) opt_rho1(1) opt_xi1(l1)
+            # dual variables d_u1{l1}
+            # minimize (-opt_rho1 + sum(opt_xi1)/(l1*nu))
+               # for k in range(1, l1 + 1):
+                  # HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k}
+               # sum(opt_alpha) == 1
+               # opt_alpha >= 0
+               # opt_xi1 >= 0
+               # opt_rho1 >= 0
+         # cvx_end
 
          rho1 = opt_rho1
          rho = [rho1]
@@ -200,36 +200,34 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
          if D < (1/(l1+l2)) or D >= 1:
             error (['D (', str(D), ') outside dual feasibility boundary.'])
 
-         cvx_begin
-            variables opt_alpha(m) opt_rho(1) opt_xi1(l1) opt_xi2(l2)
-            dual variables d_u1{l1} d_u2{l2}
-            minimize (-opt_rho + D*(sum(opt_xi1)+sum(opt_xi2)))
-               for k in range(1, l1 + 1):
-                  # Y is 1
-                  #HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k}
-                  HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k}
-               for k in range(1, l2 + 1):
-                  # Y is -1, hence <=
-                  -HM(l1+k,:)*opt_alpha - opt_rho + opt_xi2(k) >= 0 : d_u2{k}
-               sum(opt_alpha) == 1
-               opt_alpha >= 0
-               opt_xi1 >= 0
-               opt_xi2 >= 0
-         cvx_end
-         
+         # cvx_begin - TODO
+            # variables opt_alpha(m) opt_rho(1) opt_xi1(l1) opt_xi2(l2)
+            # dual variables d_u1{l1} d_u2{l2}
+            # minimize (-opt_rho + D*(sum(opt_xi1)+sum(opt_xi2)))
+               # for k in range(1, l1 + 1):
+                  # # Y is 1
+                  # HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k}
+               # for k in range(1, l2 + 1):
+                  # # Y is -1, hence <=
+                  # -HM(l1+k,:)*opt_alpha - opt_rho + opt_xi2(k) >= 0 : d_u2{k}
+               # sum(opt_alpha) == 1
+               # opt_alpha >= 0
+               # opt_xi1 >= 0
+               # opt_xi2 >= 0
+         # cvx_end
          
          rho = opt_rho
 
       alpha = opt_alpha
-       theta = -cvx_optval   # primal: min, dual: max, gamma = - (dual result)
+      theta = -cvx_optval   # primal: min, dual: max, gamma = - (dual result)
 
-       u = zeros(l,1)
-       for k in range(1, l1 + 1):
-           u(k) = d_u1{k}
-       for k in range(1, l2 + 1):
-           u(l1+k) = d_u2{k}
+      u = zeros(l,1)
+      for k in range(1, l1 + 1):
+         u[k] = d_u1[k]
+      for k in range(1, l2 + 1):
+         u[l1+k] = d_u2[k]
 
-      print(' '.join(['alpha: ', str(alpha')]))
+      print(' '.join(['alpha: ', str(matrix.Transpose(alpha))]))
       if boosting_type == 1 and l2 > 0:
          print(' '.join(['rho1/2: ', str(rho1), ', ', str(rho2)]))
       elif boosting_type == 1 and l2 == 0:
@@ -241,7 +239,7 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
 
    Ytrain = zeros(l,1)
    for j in range(1, m + 1):
-      Ytrain = Ytrain + alpha(j)*HM(:,j)
+      Ytrain = Ytrain + alpha(j) * slicing.GetRange(HM, ':', j)
 
    # Output classifier structure
    classifier=[]
@@ -249,7 +247,7 @@ def lpboost (X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col):
    classifier.H = H
    classifier.HI = HI
    classifier.Ytrain = Ytrain
-   classifier.Ytrain(I) = Ytrain
+   classifier.Ytrain(I) = Ytrain # TODO - what is going on here?
    classifier.rho = rho
    classifier.HM = HM
    if boosting_type == 1:
@@ -290,7 +288,7 @@ def cfun (X, classifier):
          (optional) GY: (n,q) classifier outputs.
    """
    if size(X,1) == 1:
-      X = X'   # Bring X in column form
+      X = matrix.Transpose(X)   # Bring X in column form
    n = size(X,1)
 
    # Compute the real classification outputs as weighted sum of the individual
@@ -300,9 +298,9 @@ def cfun (X, classifier):
       GY = zeros(n,len(classifier.alpha))
    for j in range(1, len(classifier.alpha) + 1):
       if classifier.alpha(j) >= 1e-5 or nargout >= 3:
-         cout=classifier.H{j}(X)
+         cout = classifier.H[j](X)
          if nargout >= 3:
-            GY(:,j) = cout
+            slicing.SetRange(GY, ':', j, cout)
 
          if isempty(Yreal):
             Yreal = classifier.alpha(j)*cout

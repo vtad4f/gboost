@@ -5,9 +5,7 @@ import gboost1d5
 import lpboost
 import rocscore
 import findhypothesis_graph
-
 import scipy.io as sio
-
 
 print(' '.join(['Loading example graphs...']))
 mat = sio.loadmat('example-graphs.mat')
@@ -27,13 +25,13 @@ print(' ')
 print(' '.join(['Please press return to start training...']))
 input()
 
-[cl, cfun] = gboost2 (train_G, train_Y, 0.2, 0.05)
+cl, cfun = gboost2 (train_G, train_Y, 0.2, 0.05)
 print(' '.join(['The classifier has been trained successfully.']))
 print(' '.join(['There are ', str(len(find(cl.alpha > 1e-5))), ' active subgraph stumps.']))
 print(' '.join(['Please press return to test the classifier...']))
 input()
 
-[Yout, Yreal, GY] = cfun (test_G)
+Yout, Yreal, GY = cfun (test_G)
 accuracy = len(find(Yout == test_Y))/len(test_Y)
 print(' '.join(['   test accuracy = ', str(accuracy)]))
 [auc, eer, curve] = rocscore (Yreal, test_Y)

@@ -1,5 +1,8 @@
 
 
+import slicing
+
+
 def findhypothesis_graph (X, Y, u, beta, max_col, htype):
    """
       Graph boosting stump generator
@@ -45,12 +48,11 @@ def findhypothesis_graph (X, Y, u, beta, max_col, htype):
          h[i]=[] # TODO - set to struct?
          h[i].h = lambda G: graph_stump_classifier (G, subg[i], ybase[i], htype) # TODO - does i change?
          h[i].hi = subg[i]
-         h[i].GY = GY(:,i)   # subgraph response on training data # TODO - slicing?
+         h[i].GY = slicing.GetRange(GY, ':', i)   # subgraph response on training data
          h[i].GY(find(h[i].GY))=1
          if htype == 2:
             h[i].GY(find(h[i].GY == 0))=-1
             h[i].GY = ybase[i]*h[i].GY
-         #h[i].GY(find(h[i].GY)) = count[i]   # Convert counts to flags
    return h
    
    

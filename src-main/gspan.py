@@ -1,5 +1,8 @@
 
 
+import matrix
+
+
 def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax, boostType):
    """
       gSpan frequent graph substructure algorithm.
@@ -57,7 +60,7 @@ def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax
          subg: (1,p) cellarray of p graph structures that appear frequently in G.
       
          (optional) count: (1,p) uint32 array giving at element i the number of times
-         graphs{i} appears in G (duplicates within one graph only counted once).
+         graphs[i] appears in G (duplicates within one graph only counted once).
       
          (in case of graph boosting count is)
          count: (1,p) cellarray of { -1, 1 }, giving the classifiers h_{<subg>,<subgY>}.
@@ -76,16 +79,16 @@ def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax
       if isempty(size_req):
          size_req = [0 0]
 
-      if size(size_req,1) ~= 1 or size(size_req,2) ~= 2:
+      if size(size_req,1) != 1 or size(size_req,2) != 2:
          error(['size_req parameter invalid.']))
       d_size_req = size_req
 
    for i in range(1, len(G) + 1):
-      [v, r] = verifygraph (G{i})
-      if v ~= 1:
+      [v, r] = verifygraph (G[i])
+      if v != 1:
          error(['Graph ', str(i), ': ', r]))
    if size(G,2) == 1:
-      G=G'   # put it as row.
+      G = matrix.Transpose(G)   # put it as row.
 
    if nargin > 3:
       print(' '.join(['Starting gspan-boost run...']))
@@ -93,14 +96,11 @@ def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax
          boostTau = 0.0
 
       if nargout == 3:
-         [subg, count, GY] = mexgspan (G, minsup, d_size_req, 0, ...
-            boostY, boostWeights, boostTau, boostN, boostMax, boostType)
+         [subg, count, GY] = mexgspan (G, minsup, d_size_req, 0, boostY, boostWeights, boostTau, boostN, boostMax, boostType)
       elif nargout == 2:
-         [subg, count] = mexgspan (G, minsup, d_size_req, 0, ...
-            boostY, boostWeights, boostTau, boostN, boostMax, boostType)
+         [subg, count] = mexgspan (G, minsup, d_size_req, 0, boostY, boostWeights, boostTau, boostN, boostMax, boostType)
       elif nargout == 1:
-         [subg] = mexgspan (G, minsup, d_size_req, 0, ...
-            boostY, boostWeights, boostTau, boostN, boostMax, boostType)
+         [subg] = mexgspan (G, minsup, d_size_req, 0, boostY, boostWeights, boostTau, boostN, boostMax, boostType)
    else:
       print(' '.join(['Starting normal gspan run...']))
       if nargout == 3:
@@ -112,7 +112,7 @@ def gspan (G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax
 
    # Filter out duplicates (this is due to undirected edges)
    for i in range(1, len(subg) + 1):
-      subg{i}.edges = unique (subg{i}.edges, 'rows')
+      subg[i].edges = unique (subg[i].edges, 'rows')
       
    return subg, count, GY
    
@@ -128,20 +128,22 @@ def verifygraph (G):
 
    # Check for indices
    if size(G.edges, 1) > 0:
-      I = find (G.edges(:,1) <= 0 | G.edges(:,1) > nodes | ...
-         G.edges(:,2) <= 0 | G.edges(:,2) > nodes)
-      if len(I) ~= 0:
+      I = find (slicing.GetRange(G.edges, ':', 1) <= 0 |
+                slicing.GetRange(G.edges, ':', 1) > nodes |
+                slicing.GetRange(G.edges, ':', 2) <= 0 |
+                slicing.GetRange(G.edges, ':', 2) > nodes)
+      if len(I) != 0:
          valid = 0
          if nargout >= 2:
-            reason = ['Edge indices not within 1-', str(nodes), '.']
+            reason = ' '.join(['Edge indices not within 1-', str(nodes), '.'])
          return
 
       # Check for self referential edges (self-loops)
-      I = find (G.edges(:,1) == G.edges(:,2))
-      if len(I) ~= 0:
+      I = find (slicing.GetRange(G.edges, ':', 1) == slicing.GetRange(G.edges, ':', 2))
+      if len(I) != 0:
          valid = 0
          if nargout >= 2:
-            reason = ['Graph has ', str(len(I)), ' self-loops.']
+            reason = ' '.join(['Graph has ', str(len(I)), ' self-loops.'])
          return
 
    # Check for duplicate edges
@@ -149,13 +151,12 @@ def verifygraph (G):
    #    multiple edge attributes
    # TODO
    if false:
-      E = G.edges(:,1:2)
+      E = slicing.GetRange(G.edges, ':', '1:2')
       Eu = unique(E,'rows')
-      if size(E,1) ~= size(Eu,1):
+      if size(E,1) != size(Eu,1):
          valid = 0
          if nargout >= 2:
-            reason = ['There are ', str(size(E,1)-size(Eu,1)), ...
-               ' duplicate edges.']
+            reason = ' '.join(['There are ', str(size(E,1)-size(Eu,1)), ' duplicate edges.'])
          return
 
    if nargout >= 2:
