@@ -1,5 +1,5 @@
 function [subg, count, GY] = gspan (G, minsup, size_req, ...
-	boostY, boostWeights, boostTau, boostN, boostMax, boostType);
+   boostY, boostWeights, boostTau, boostN, boostMax, boostType);
 
 % gSpan frequent graph substructure algorithm.
 %   and
@@ -68,61 +68,61 @@ function [subg, count, GY] = gspan (G, minsup, size_req, ...
 %
 
 if nargin < 2 || nargin > 10 || nargout > 3
-	error(['Invalid number of input or output parameters.']);
+   error(['Invalid number of input or output parameters.']);
 end
 
 d_size_req = [0 0];
 if nargin >= 3
-	if isempty(size_req)
-		size_req = [0 0];
-	end
+   if isempty(size_req)
+      size_req = [0 0];
+   end
 
-	if size(size_req,1) ~= 1 || size(size_req,2) ~= 2
-		error(['size_req parameter invalid.']);
-	end
-	d_size_req = size_req;
+   if size(size_req,1) ~= 1 || size(size_req,2) ~= 2
+      error(['size_req parameter invalid.']);
+   end
+   d_size_req = size_req;
 end
 
 for i=1:length(G)
-	[v, r] = verifygraph (G{i});
-	if v ~= 1
-		error(['Graph ', num2str(i), ': ', r]);
-	end
+   [v, r] = verifygraph (G{i});
+   if v ~= 1
+      error(['Graph ', num2str(i), ': ', r]);
+   end
 end
 if size(G,2) == 1
-	G=G';	% put it as row.
+   G=G';   % put it as row.
 end
 
 if nargin > 3
-	disp(['Starting gspan-boost run...']);
-	if boostTau < 0.0
-		boostTau = 0.0;
-	end
+   disp(['Starting gspan-boost run...']);
+   if boostTau < 0.0
+      boostTau = 0.0;
+   end
 
-	if nargout == 3
-		[subg, count, GY] = mexgspan (G, minsup, d_size_req, 0, ...
-			boostY, boostWeights, boostTau, boostN, boostMax, boostType);
-	elseif nargout == 2
-		[subg, count] = mexgspan (G, minsup, d_size_req, 0, ...
-			boostY, boostWeights, boostTau, boostN, boostMax, boostType);
-	elseif nargout == 1
-		[subg] = mexgspan (G, minsup, d_size_req, 0, ...
-			boostY, boostWeights, boostTau, boostN, boostMax, boostType);
-	end
+   if nargout == 3
+      [subg, count, GY] = mexgspan (G, minsup, d_size_req, 0, ...
+         boostY, boostWeights, boostTau, boostN, boostMax, boostType);
+   elseif nargout == 2
+      [subg, count] = mexgspan (G, minsup, d_size_req, 0, ...
+         boostY, boostWeights, boostTau, boostN, boostMax, boostType);
+   elseif nargout == 1
+      [subg] = mexgspan (G, minsup, d_size_req, 0, ...
+         boostY, boostWeights, boostTau, boostN, boostMax, boostType);
+   end
 else
-	disp(['Starting normal gspan run...']);
-	if nargout == 3
-		[subg, count, GY] = mexgspan (G, minsup, d_size_req, 0);
-	elseif nargout == 2
-		[subg, count] = mexgspan (G, minsup, d_size_req, 0);
-	elseif nargout == 1
-		[subg] = mexgspan (G, minsup, d_size_req, 0);
-	end
+   disp(['Starting normal gspan run...']);
+   if nargout == 3
+      [subg, count, GY] = mexgspan (G, minsup, d_size_req, 0);
+   elseif nargout == 2
+      [subg, count] = mexgspan (G, minsup, d_size_req, 0);
+   elseif nargout == 1
+      [subg] = mexgspan (G, minsup, d_size_req, 0);
+   end
 end
 
 % Filter out duplicates (this is due to undirected edges)
 for i=1:length(subg)
-	subg{i}.edges = unique (subg{i}.edges, 'rows');
+   subg{i}.edges = unique (subg{i}.edges, 'rows');
 end
 
 
@@ -137,25 +137,25 @@ nodes = size(G.nodelabels,1);
 
 % Check for indices
 if size(G.edges, 1) > 0
-	I = find (G.edges(:,1) <= 0 | G.edges(:,1) > nodes | ...
-		G.edges(:,2) <= 0 | G.edges(:,2) > nodes);
-	if length(I) ~= 0
-		valid = 0;
-		if nargout >= 2
-			reason = ['Edge indices not within 1-', num2str(nodes), '.'];
-		end
-		return;
-	end
+   I = find (G.edges(:,1) <= 0 | G.edges(:,1) > nodes | ...
+      G.edges(:,2) <= 0 | G.edges(:,2) > nodes);
+   if length(I) ~= 0
+      valid = 0;
+      if nargout >= 2
+         reason = ['Edge indices not within 1-', num2str(nodes), '.'];
+      end
+      return;
+   end
 
-	% Check for self referential edges (self-loops)
-	I = find (G.edges(:,1) == G.edges(:,2));
-	if length(I) ~= 0
-		valid = 0;
-		if nargout >= 2
-			reason = ['Graph has ', num2str(length(I)), ' self-loops.'];
-		end
-		return;
-	end
+   % Check for self referential edges (self-loops)
+   I = find (G.edges(:,1) == G.edges(:,2));
+   if length(I) ~= 0
+      valid = 0;
+      if nargout >= 2
+         reason = ['Graph has ', num2str(length(I)), ' self-loops.'];
+      end
+      return;
+   end
 end
 
 % Check for duplicate edges
@@ -163,20 +163,20 @@ end
 %    multiple edge attributes
 % TODO
 if false
-	E = G.edges(:,1:2);
-	Eu = unique(E,'rows');
-	if size(E,1) ~= size(Eu,1)
-		valid = 0;
-		if nargout >= 2
-			reason = ['There are ', num2str(size(E,1)-size(Eu,1)), ...
-				' duplicate edges.'];
-		end
-		return;
-	end
+   E = G.edges(:,1:2);
+   Eu = unique(E,'rows');
+   if size(E,1) ~= size(Eu,1)
+      valid = 0;
+      if nargout >= 2
+         reason = ['There are ', num2str(size(E,1)-size(Eu,1)), ...
+            ' duplicate edges.'];
+      end
+      return;
+   end
 end
 
 if nargout >= 2
-	reason = 'Graph is ok.';
+   reason = 'Graph is ok.';
 end
 valid = 1;
 

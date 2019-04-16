@@ -27,32 +27,32 @@ function [h] = findhypothesis_graph (X, Y, u, beta, max_col, htype);
 % The maximum number of subgraph patterns to return.
 boostN = 1;
 if max_col > 0
-	boostN = max_col;
+   boostN = max_col;
 end
 
 % subg: (1,p) cellarray of graphs
 % ybase: (1,p) basic response value (normally constant)
 % GY: (n,p) response on the n training patterns
 [subg, ybase, GY] = gspan (X, 2, [0 16], ...
-	Y, u, beta, boostN, 1e6, htype);
+   Y, u, beta, boostN, 1e6, htype);
 disp(['gSpan returned ', num2str(length(subg)), ' subgraphs']);
 
 if length(subg) == 0
-	h={};
+   h={};
 else
-	h={};
-	for i=1:length(subg)
-		h{i}=[];
-		h{i}.h = @(G) graph_stump_classifier (G, subg{i}, ybase(i), htype);
-		h{i}.hi = subg{i};
-		h{i}.GY = GY(:,i);	% subgraph response on training data
-		h{i}.GY(find(h{i}.GY))=1;
-		if htype == 2
-			h{i}.GY(find(h{i}.GY == 0))=-1;
-			h{i}.GY = ybase(i)*h{i}.GY;
-		end
-		%h{i}.GY(find(h{i}.GY)) = count(i);	% Convert counts to flags
-	end
+   h={};
+   for i=1:length(subg)
+      h{i}=[];
+      h{i}.h = @(G) graph_stump_classifier (G, subg{i}, ybase(i), htype);
+      h{i}.hi = subg{i};
+      h{i}.GY = GY(:,i);   % subgraph response on training data
+      h{i}.GY(find(h{i}.GY))=1;
+      if htype == 2
+         h{i}.GY(find(h{i}.GY == 0))=-1;
+         h{i}.GY = ybase(i)*h{i}.GY;
+      end
+      %h{i}.GY(find(h{i}.GY)) = count(i);   % Convert counts to flags
+   end
 end
 
 
@@ -60,24 +60,24 @@ function [y] = graph_stump_classifier (G, subg, ybase, htype);
 
 y=zeros(length(G),1);
 for i=1:length(G)
-	count = graphmatch (subg, G{i}, 1, 0);
+   count = graphmatch (subg, G{i}, 1, 0);
 
-	% Singular classifier with positive outputs, for 1.5-class LPBoosting
-	if htype == 1
-		if count > 0
-			y(i) = ybase;
-		else
-			y(i) = 0;	% Output zero in case pattern wasn't found
-		end
-	% Complementary-closed classifier that can return negative outputs for
-	% 2-class LPBoosting.
-	elseif htype == 2
-		if count > 0
-			y(i) = ybase;
-		else
-			y(i) = -ybase;
-		end
-	end
+   % Singular classifier with positive outputs, for 1.5-class LPBoosting
+   if htype == 1
+      if count > 0
+         y(i) = ybase;
+      else
+         y(i) = 0;   % Output zero in case pattern wasn't found
+      end
+   % Complementary-closed classifier that can return negative outputs for
+   % 2-class LPBoosting.
+   elseif htype == 2
+      if count > 0
+         y(i) = ybase;
+      else
+         y(i) = -ybase;
+      end
+   end
 end
 
 
