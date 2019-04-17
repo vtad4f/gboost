@@ -39,7 +39,7 @@ function _Confirm
 #  @brief  Main execution
 #
 ################################################################################
-import scipy
+import smop
 _Confirm "make" && make
-_Confirm "run" && cd src-main && py example.py
+_Confirm "run" && cd src-main && python example.py && cd -
 
