@@ -41,5 +41,5 @@ function _Confirm
 ################################################################################
 import smop
 _Confirm "make" && make
-_Confirm "run" && cd src-main && python example.py && cd -
+_Confirm "run" && cd src-main && python example.py
 
