@@ -1,6 +1,6 @@
 
 all:
-	mkdir build || true
+	mkdir -p build
 	cd build ; cmake .. ; make
 	cd src-main/conversion ; ./convert.sh
    

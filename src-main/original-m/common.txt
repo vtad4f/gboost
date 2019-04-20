@@ -1,4 +1,13 @@
 Replace the following in all files after the conversion...
-    ,   
-libsmop, my_src
-disp, my_disp
+    ;   
+concat ; ''.join
+num2str ; str
+length ; len
+@function ;
+
+libsmop ; my_src
+load ; my_load
+disp ; my_disp
+
+Some content differs betwen python 2 and 3...
+pause ; raw_input()

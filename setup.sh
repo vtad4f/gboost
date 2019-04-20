@@ -16,6 +16,20 @@ function import()
 
 ################################################################################
 #
+#  @brief  TODO_COMMENT
+#
+################################################################################
+function _EvalYesNo
+{
+   case "$1" in
+      y|Y|yes|Yes|YES) return 0 ;; # true
+      n|N|no|No|NO)    return 1 ;;
+      *)               return 1 ;; # {Enter} means no
+   esac
+}
+
+################################################################################
+#
 #  @brief  Confirm an action with user, then echo yes/no
 #
 ################################################################################
@@ -27,11 +41,21 @@ function _Confirm
    [[ $# == 0 ]] && action_="Continue" || action_="$@"
    
    builtin read -p "$action_ (y/n)? " choice_
-   case "$choice_" in
-      y|Y|yes|Yes|YES) return 0 ;; # true
-      n|N|no|No|NO)    return 1 ;;
-      *)               return 1 ;; # {Enter} means no
-   esac
+   _EvalYesNo "$choice_"
+   return $?
+}
+
+################################################################################
+#
+#  @brief  TODO_COMMENT
+#
+################################################################################
+function _EvalArg
+{
+   _EvalYesNo "$1" && return 0 # true - evaluated to 'yes'
+   [[ ! -z "$1" ]] && return 1 # actually evaluated to 'no'
+   _Confirm "$2"               # else ask the user
+   return $?
 }
 
 ################################################################################
@@ -40,6 +64,6 @@ function _Confirm
 #
 ################################################################################
 import smop
-_Confirm "make" && make
-_Confirm "run" && cd src-main && python example.py
+_EvalArg "$1" "make" && make
+_EvalArg "$2" "run" && cd src-main && python example.py
 

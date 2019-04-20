@@ -8,7 +8,7 @@ class Replacements(list):
    """
    COMMON_BASENAME = 'common'
    REPLACE_EXT  = '.txt'
-   DELIM = ','
+   DELIM = ';'
    
    def __init__(self, pypath):
       """
