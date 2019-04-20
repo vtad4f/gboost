@@ -6,6 +6,7 @@ import sys
 
 def my_load(fpath, vars):
    """
+      BRIEF  Load a .mat file
    """
    print(type(sio.loadmat(fpath)))
    for name, value in sio.loadmat(fpath).items():

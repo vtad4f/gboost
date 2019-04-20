@@ -16,7 +16,7 @@ function import()
 
 ################################################################################
 #
-#  @brief  TODO_COMMENT
+#  @brief  Is the argument $1 a yes or a no?
 #
 ################################################################################
 function _EvalYesNo
@@ -47,7 +47,8 @@ function _Confirm
 
 ################################################################################
 #
-#  @brief  TODO_COMMENT
+#  @brief  Check for a y/n value in the arg $1
+#          If we don't find one, ask for it with the specified message $2
 #
 ################################################################################
 function _EvalArg

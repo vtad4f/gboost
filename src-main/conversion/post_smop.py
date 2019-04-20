@@ -5,6 +5,7 @@ import sys
 
 class Replacements(list):
    """
+      BRIEF  A collection of to-from replacements
    """
    COMMON_BASENAME = 'common'
    REPLACE_EXT  = '.txt'
@@ -12,6 +13,7 @@ class Replacements(list):
    
    def __init__(self, pypath):
       """
+         BRIEF  Parse the files to initialize the collection
       """
       base_path, py_ext = os.path.splitext(pypath)
       common_path = Replacements.COMMON_BASENAME + Replacements.REPLACE_EXT
@@ -22,6 +24,7 @@ class Replacements(list):
             
    def _Read(self, path):
       """
+         BRIEF  Parse the file
       """
       with open(path, 'r') as f:
          for line in f:
