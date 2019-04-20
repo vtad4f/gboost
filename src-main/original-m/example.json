@@ -1,3 +1,7 @@
-Replace the following in example.m after the conversion...
-   ;
-example_graphs') ; example-graphs.mat', globals())
+{
+   "replace" : {
+      "   "              : "",
+      "example_graphs')" : "example-graphs.mat', globals())"
+
+   }
+}

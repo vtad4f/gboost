@@ -1,42 +1,35 @@
 
+
+from collections import OrderedDict
+import json
 import os
 import sys
 
 
-class Replacements(list):
+class Changes(object):
    """
       BRIEF  A collection of to-from replacements
    """
-   COMMON_BASENAME = 'common'
-   REPLACE_EXT  = '.txt'
-   DELIM = ';'
+   PREFIX = 'prefix'
+   REPLACE = 'replace'
    
-   def __init__(self, pypath):
+   def __init__(self, path = 'common.json'):
       """
          BRIEF  Parse the files to initialize the collection
       """
-      base_path, py_ext = os.path.splitext(pypath)
-      common_path = Replacements.COMMON_BASENAME + Replacements.REPLACE_EXT
-      this_path = base_path + Replacements.REPLACE_EXT
-      for path in [common_path, this_path]:
-         if os.path.isfile(path):
-            self._Read(path)
+      content = OrderedDict()
+      
+      if not path.endswith('.json'):
+         path = os.path.splitext(path)[0] + '.json'
+         
+      if os.path.isfile(path):
+         with open(path, 'r') as f:
+            content = json.load(f, object_pairs_hook=OrderedDict)
             
-   def _Read(self, path):
-      """
-         BRIEF  Parse the file
-      """
-      with open(path, 'r') as f:
-         for line in f:
-            if Replacements.DELIM in line:
-               before, after = line.split(Replacements.DELIM)
-               if before.strip():
-                  before = before.strip()
-               if after.strip():
-                  after = after.strip()
-               self.append((before, after.rstrip('\r\n')))
-               
-               
+      self.prefix = content['prefix'] if 'prefix' in content else []
+      self.replace = content['replace'] if 'replace' in content else OrderedDict()
+      
+      
 class PyFile(object):
    """
       BRIEF  This class represents the python file we are modifying
@@ -50,12 +43,14 @@ class PyFile(object):
       with open(self.path, 'r') as f:
          self.contents = f.read()
          
-   def Replace(self):
+   def Change(self):
       """
          BRIEF  Replace file contents
       """
-      for before, after in Replacements(self.path):
-         self.contents = self.contents.replace(before, after)
+      for changes in [Changes(), Changes(self.path)]:
+         for before, after in changes.replace.items():
+            self.contents = self.contents.replace(before, after)
+         self.contents = '\n'.join(changes.prefix + [self.contents])
       return self
       
    def Write(self):
@@ -72,6 +67,6 @@ if __name__ == '__main__':
       BRIEF  Main execution
    """
    for pypath in sys.argv[1:]:
-      PyFile(pypath).Replace().Write()
+      PyFile(pypath).Change().Write()
       
       
