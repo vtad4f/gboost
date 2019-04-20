@@ -1,0 +1,4 @@
+Replace the following in all files after the conversion...
+    ,   
+libsmop, my_src
+disp, my_disp

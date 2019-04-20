@@ -7,10 +7,10 @@
 ################################################################################
 function import()
 {
-   py -c "import $1"
+   python -c "import $1"
    if [[ $? -gt 0 ]]; then
-      echo "py -m pip install $1"
-      py -m pip install $1
+      echo "python -m pip install $1"
+      python -m pip install $1
    fi
 }
 
