@@ -3,6 +3,7 @@
 from collections import OrderedDict
 import json
 import os
+import re
 import sys
 
 
@@ -28,7 +29,12 @@ class Changes(object):
       self.replace = content['replace'] if 'replace' in content else OrderedDict()
       self.suffix  = content['suffix']  if 'suffix'  in content else []
       
-      
+      self.regex = OrderedDict()
+      if 'regex' in content:
+         for pattern, replacement in content['regex'].items():
+            self.regex[re.compile(pattern, re.MULTILINE)] = replacement
+            
+            
 class PyFile(object):
    """
       BRIEF  This class represents the python file we are modifying
@@ -49,6 +55,8 @@ class PyFile(object):
       for changes in [Changes(), Changes(self.path)]:
          for before, after in changes.replace.items():
             self.contents = self.contents.replace(before, after)
+         for regex, after in changes.regex.items():
+            self.contents = regex.sub(after, self.contents)
          self.contents = '\n'.join(changes.prefix + [self.contents] + changes.suffix)
       return self
       

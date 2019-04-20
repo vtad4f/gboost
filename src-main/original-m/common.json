@@ -11,5 +11,8 @@
       "load"    : "my_load",
       "disp"    : "my_disp",
       "pause"   : "raw_input()"
+   },
+   "regex" : {
+      ",nargout=[0-9]+" : ""
    }
 }
