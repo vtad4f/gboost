@@ -1,13 +1,15 @@
 {
+   "prefix" : [
+      "from my_src import *"
+   ],
    "replace" : {
-      "    "      : "   ",
-      "concat"    : "''.join",
-      "num2str"   : "str",
-      "length"    : "len",
-      "@function" : "",
-      "libsmop"   : "my_src",
-      "load"      : "my_load",
-      "disp"      : "my_disp",
-      "pause"     : "raw_input()"
+      "    "    : "   ",
+      "concat"  : "''.join",
+      "num2str" : "str",
+      "length"  : "len",
+      "libsmop" : "smop.libsmop",
+      "load"    : "my_load",
+      "disp"    : "my_disp",
+      "pause"   : "raw_input()"
    }
 }

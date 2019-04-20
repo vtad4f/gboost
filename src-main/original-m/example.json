@@ -1,4 +1,7 @@
 {
+   "prefix" : [
+      "from gboost2 import gboost2"
+   ],
    "replace" : {
       "   "              : "",
       "example_graphs')" : "example-graphs.mat', globals())"

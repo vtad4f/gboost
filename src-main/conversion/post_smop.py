@@ -10,12 +10,10 @@ class Changes(object):
    """
       BRIEF  A collection of to-from replacements
    """
-   PREFIX = 'prefix'
-   REPLACE = 'replace'
    
    def __init__(self, path = 'common.json'):
       """
-         BRIEF  Parse the files to initialize the collection
+         BRIEF  These files translated from smop may need some work...
       """
       content = OrderedDict()
       
@@ -26,8 +24,9 @@ class Changes(object):
          with open(path, 'r') as f:
             content = json.load(f, object_pairs_hook=OrderedDict)
             
-      self.prefix = content['prefix'] if 'prefix' in content else []
+      self.prefix  = content['prefix']  if 'prefix'  in content else []
       self.replace = content['replace'] if 'replace' in content else OrderedDict()
+      self.suffix  = content['suffix']  if 'suffix'  in content else []
       
       
 class PyFile(object):
@@ -50,7 +49,7 @@ class PyFile(object):
       for changes in [Changes(), Changes(self.path)]:
          for before, after in changes.replace.items():
             self.contents = self.contents.replace(before, after)
-         self.contents = '\n'.join(changes.prefix + [self.contents])
+         self.contents = '\n'.join(changes.prefix + [self.contents] + changes.suffix)
       return self
       
    def Write(self):
