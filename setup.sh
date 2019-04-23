@@ -8,9 +8,9 @@ PY_EXE=python # 'python' for python 2, 'py' for python 3+
 #  @brief  Import the python module if not already installed
 #
 ################################################################################
-function import()
+function _Import
 {
-   $PY_EXE -c "import $1"
+   $PY_EXE -c "import $1" 2> /dev/null
    if [[ $? -gt 0 ]]; then
       echo "$PY_EXE -m pip install $1"
       $PY_EXE -m pip install $1
@@ -71,7 +71,7 @@ function _EvalArg
 #  @brief  Main execution
 #
 ################################################################################
-import smop
+_Import smop
 _EvalArg "$1" "make" && make
 _EvalArg "$2" "run" && cd src-main && $PY_EXE example.py
 

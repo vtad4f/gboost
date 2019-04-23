@@ -5,4 +5,4 @@ all:
 	cd src-main/conversion ; ./convert.sh
    
 clean:
-	rm -rf build
+	git clean -dfqX -- .
