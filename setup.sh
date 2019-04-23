@@ -72,6 +72,7 @@ function _EvalArg
 #
 ################################################################################
 _Import smop
+_Import matplotlib
 _EvalArg "$1" "make" && make
 _EvalArg "$2" "run" && cd src-main && $PY_EXE example.py
 
