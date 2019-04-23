@@ -25,7 +25,7 @@ def my_disp(*args):
 def my_pause():
    """
    """
-   raw_input()
+   # raw_input() # TODO - uncomment in final revision
    
    
 def my_sort(numpy_ndarray, x, descr): # TODO - does x matter?
@@ -53,13 +53,12 @@ def my_norm(*args):
    # TODO - implement
    
    
-def my_concat(array):
+def my_concat(*args):
    """
    """
-   print("#")
-   for arg in array:
-      print arg
-   # print(numpy.concatenate(*args))
-   print("#")
-   # return numpy.concatenate(*args)
+   # TODO - implement
+   
+   
+   
+   
    

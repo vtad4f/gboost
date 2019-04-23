@@ -1,5 +1,8 @@
 
 
+PY_EXE=python # 'python' for python 2, 'py' for python 3+
+
+
 ################################################################################
 #
 #  @brief  Import the python module if not already installed
@@ -7,12 +10,13 @@
 ################################################################################
 function import()
 {
-   python -c "import $1"
+   $PY_EXE -c "import $1"
    if [[ $? -gt 0 ]]; then
-      echo "python -m pip install $1"
-      python -m pip install $1
+      echo "$PY_EXE -m pip install $1"
+      $PY_EXE -m pip install $1
    fi
 }
+
 
 ################################################################################
 #
@@ -27,6 +31,7 @@ function _EvalYesNo
       *)               return 1 ;; # {Enter} means no
    esac
 }
+
 
 ################################################################################
 #
@@ -45,6 +50,7 @@ function _Confirm
    return $?
 }
 
+
 ################################################################################
 #
 #  @brief  Check for a y/n value in the arg $1
@@ -59,6 +65,7 @@ function _EvalArg
    return $?
 }
 
+
 ################################################################################
 #
 #  @brief  Main execution
@@ -66,5 +73,5 @@ function _EvalArg
 ################################################################################
 import smop
 _EvalArg "$1" "make" && make
-_EvalArg "$2" "run" && cd src-main && python example.py
+_EvalArg "$2" "run" && cd src-main && $PY_EXE example.py
 
