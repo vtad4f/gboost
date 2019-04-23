@@ -1,16 +1,22 @@
 
 
 PY_EXE=python # 'python' for python 2, 'py' for python 3+
-METHOD=smop # smop, ompc
+METHOD=smop # rename, smop, ompc
 
 
+# Move to the dir containing the m files
 this_dir=$(pwd)
 cd ../original-m
 
-
-if [[ $METHOD == 'smop' ]]; then
+# Convert the files
+if [[ $METHOD == 'rename' ]]; then
+   for mpath in *.m; do
+      cp $mpath $(basename $mpath .m).py
+   done
+   
+elif [[ $METHOD == 'smop' ]]; then
    echo smop *.m
-   smop *.m > /dev/null 2>&1 # Convert matlab to python
+   smop *.m > /dev/null 2>&1 # Convert m to python
    $PY_EXE ../conversion/post_smop.py *.py # Some additional changes are necessary
 
 elif [[ $METHOD == 'ompc' ]]; then
