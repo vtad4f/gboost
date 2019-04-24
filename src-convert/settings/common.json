@@ -1,4 +1,9 @@
 {
+   "post rename" : {
+      "prefix" : [
+         "from pylab import *"
+      ]
+   },
    "post smop" : {
       "prefix" : [
          "from my_src import *"
@@ -18,7 +23,7 @@
          "norm("         : "my_norm(",
          "pause"         : "my_pause()"
       },
-      "regex" : {
+      "single-line-regex" : {
          ",nargout=[0-9]+" : ""
       }
    }

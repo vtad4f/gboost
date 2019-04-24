@@ -17,10 +17,11 @@ class Changes(object):
       """
          BRIEF  These files may need some work...
       """
-      self.prefix  = []
-      self.replace = OrderedDict()
-      self.suffix  = []
-      self.regex   = OrderedDict()
+      self.prefix            = []
+      self.replace           = OrderedDict()
+      self.suffix            = []
+      self.single_line_regex = OrderedDict()
+      self.multi_line_regex  = OrderedDict()
       
       fname = os.path.basename(path)
       if not fname.endswith('.json'):
@@ -43,11 +44,14 @@ class Changes(object):
                
             if 'suffix' in content:
                self.suffix = content['suffix']
-      
-            if 'regex' in content:
-               for pattern, replacement in content['regex'].items():
-                  self.regex[re.compile(pattern)] = replacement
+               
+            if 'single-line-regex' in content:
+               for pattern, replacement in content['single-line-regex'].items():
+                  self.single_line_regex[re.compile(pattern)] = replacement
                   
+            if 'multi-line-regex' in content:
+               for pattern, replacement in content['multi-line-regex'].items():
+                  self.multi_line_regex[re.compile(pattern, re.MULTILINE)] = replacement
                   
 class File(object):
    """
@@ -73,9 +77,12 @@ class File(object):
             for before, after in changes.replace.items():
                self.contents = self.contents.replace(before, after)
                
+            for regex, after in changes.multi_line_regex.items():
+               self.contents = regex.sub(after, self.contents) # TODO - format
+               
             lines = self.contents.split('\n')
             for i, line in enumerate(lines):
-               for regex, after in changes.regex.items():
+               for regex, after in changes.single_line_regex.items():
                   lines[i] = regex.sub(after.format(regex.findall(line)), line)
                   
             self.contents = '\n'.join(changes.prefix + lines + changes.suffix)
