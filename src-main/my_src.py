@@ -18,6 +18,13 @@ def my_load(fpath, vars):
          vars[name] = value
          
          
+def my_pause():
+   """
+      BRIEF  Wait for user input
+   """
+   # raw_input() # TODO - uncomment in final revision
+   
+   
 ################################################################################
 #
 #  SMOP only
@@ -31,12 +38,6 @@ def my_disp(*args):
    """
    print(' '.join(args))
    sys.stdout.flush()
-   
-   
-def my_pause():
-   """
-   """
-   # raw_input() # TODO - uncomment in final revision
    
    
 def my_sort(numpy_ndarray, x, descr): # TODO - does x matter?

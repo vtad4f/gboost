@@ -19,7 +19,8 @@
       },
       "single-line-regex" : {
          "@\\(([^)]+)\\)" : "lambda {0}:"
-      }
+      },
+      "fix-functions" : "true"
    },
    "post smop" : {
       "replace" : {
@@ -32,8 +33,7 @@
          "concat("       : "my_concat(",
          "disp"          : "my_disp",
          "sort("         : "my_sort(",
-         "norm("         : "my_norm(",
-         "pause"         : "my_pause()"
+         "norm("         : "my_norm("
       },
       "single-line-regex" : {
          ",nargout=[0-9]+" : ""

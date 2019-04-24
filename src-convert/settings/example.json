@@ -2,7 +2,10 @@
    "post common" : {
       "prefix" : [
          "from gboost2 import gboost2"
-      ]
+      ],
+      "replace" : {
+         "pause" : "my_pause()"
+      }
    },
    "post rename" : {
       "single-line-regex" : {

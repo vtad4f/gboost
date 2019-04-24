@@ -22,6 +22,7 @@ class Changes(object):
       self.suffix            = []
       self.single_line_regex = OrderedDict()
       self.multi_line_regex  = OrderedDict()
+      self.function          = None
       
       fname = os.path.basename(path)
       if not fname.endswith('.json'):
@@ -53,6 +54,11 @@ class Changes(object):
                for pattern, replacement in content['multi-line-regex'].items():
                   self.multi_line_regex[re.compile(pattern, re.MULTILINE)] = replacement
                   
+            if 'fix-functions' in content:
+               if content['fix-functions'] == "true":
+                  self.function = re.compile(r"function \[([^\]]+)\] = ")
+                  
+                  
 class File(object):
    """
       BRIEF  This class represents the file we are modifying
@@ -74,6 +80,7 @@ class File(object):
          for fpath in ['common', self.path]:
             changes = Changes(pre_post + ' ' + method, fpath)
             
+            # Config driven
             for before, after in changes.replace.items():
                self.contents = self.contents.replace(before, after)
                
@@ -86,6 +93,29 @@ class File(object):
                   matches = regex.findall(line)
                   if matches:
                      lines[i] = regex.sub(after.format(*matches), line)
+                     
+            #More complex - handle functions
+            if changes.function:
+               pending_ret = []
+               empty_line = None
+               for i, line in enumerate(lines):
+                     
+                  matches = changes.function.findall(line)
+                  if matches:
+                     lines[i] = 'def' + line.split('=')[1] + ':'
+                     if pending_ret:
+                        lines[empty_line] = '   return ' + pending_ret
+                     pending_ret = matches[0]
+                  elif pending_ret:
+                     lines[i] = '   ' + line
+                     
+                  if line.strip():
+                     empty_line = None
+                  elif empty_line is None:
+                     empty_line = i
+                     
+               if pending_ret:
+                  lines[empty_line] = '   return ' + pending_ret
                      
             self.contents = '\n'.join(changes.prefix + lines + changes.suffix)
       return self
