@@ -12,9 +12,10 @@ function _PrintRun
    return $?
 }
 
+
+# Settings
 PY_EXE=python # 'python' for python 2, 'py' for python 3+
 METHOD=smop # rename, smop, ompc
-
 
 # Move to the dir containing the m files
 _PrintRun cd original-m
@@ -36,7 +37,7 @@ elif [[ $METHOD == 'ompc' ]]; then
 fi
 
 # Post processing
-_PrintRun $PY_EXE ../post.py post $METHOD *.py # Some additional changes are necessary
+_PrintRun $PY_EXE ../fix.py post $METHOD *.py # Some additional changes are necessary
 
 # Move the files
 _PrintRun mv *.py ../../src-main/

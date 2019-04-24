@@ -25,12 +25,9 @@ class Changes(object):
       if not fname.endswith('.json'):
          fname = os.path.splitext(fname)[0] + '.json'
          
-      this_path = os.path.join('../post', fname) # relative to this file
-      print(this_path)
+      this_path = os.path.join('../settings', fname) # working dir is original-m
       
       if os.path.isfile(this_path):
-         print('exists')
-      
          with open(this_path, 'r') as f:
             entire_file = json.load(f, object_pairs_hook=OrderedDict)
             
@@ -51,16 +48,16 @@ class Changes(object):
                   self.regex[re.compile(pattern)] = replacement
                   
                   
-class PyFile(object):
+class File(object):
    """
-      BRIEF  This class represents the python file we are modifying
+      BRIEF  This class represents the file we are modifying
    """
    
-   def __init__(self, pypath):
+   def __init__(self, path):
       """
          BRIEF  Save the path and file contents
       """
-      self.path = pypath
+      self.path = path
       with open(self.path, 'r') as f:
          self.contents = f.read()
          
@@ -97,7 +94,7 @@ if __name__ == '__main__':
       BRIEF  Main execution
    """
    print(os.getcwd())
-   for pypath in sys.argv[3:]:
-      PyFile(pypath).Change(sys.argv[1], sys.argv[2]).Write()
+   for path in sys.argv[3:]:
+      File(path).Change(sys.argv[1], sys.argv[2]).Write()
       
       
