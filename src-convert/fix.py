@@ -83,8 +83,10 @@ class File(object):
             lines = self.contents.split('\n')
             for i, line in enumerate(lines):
                for regex, after in changes.single_line_regex.items():
-                  lines[i] = regex.sub(after.format(regex.findall(line)), line)
-                  
+                  matches = regex.findall(line)
+                  if matches:
+                     lines[i] = regex.sub(after.format(*matches), line)
+                     
             self.contents = '\n'.join(changes.prefix + lines + changes.suffix)
       return self
       
@@ -101,7 +103,6 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution
    """
-   print(os.getcwd())
    for path in sys.argv[3:]:
       File(path).Change(sys.argv[1], sys.argv[2]).Write()
       

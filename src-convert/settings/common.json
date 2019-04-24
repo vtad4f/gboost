@@ -1,17 +1,29 @@
 {
-   "post rename" : {
-      "prefix" : [
-         "from pylab import *"
-      ]
-   },
-   "post smop" : {
+   "post common" : {
       "prefix" : [
          "from my_src import *"
       ],
       "replace" : {
+         "num2str" : "str",
+         "length"  : "len"
+      }
+   },
+   "post rename" : {
+      "prefix" : [
+         "from pylab import *"
+      ],
+      "multi-line-regex" : {
+         ";$"                : "",
+         "%"                 : "#",
+         "\\s*\\.\\.\\.\\s*" : " "
+      },
+      "single-line-regex" : {
+         "@\\(([^)]+)\\)" : "lambda {0}:"
+      }
+   },
+   "post smop" : {
+      "replace" : {
          "    "          : "   ",
-         "num2str"       : "str",
-         "length"        : "len",
          "libsmop"       : "smop.libsmop",
          "load"          : "my_load",
          "disp(concat("  : "disp(''.join(",

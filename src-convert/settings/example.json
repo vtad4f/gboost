@@ -1,17 +1,23 @@
 {
+   "post common" : {
+      "prefix" : [
+         "from gboost2 import gboost2"
+      ]
+   },
+   "post rename" : {
+      "single-line-regex" : {
+         "load ([A-Za-z0-9._-]+)" : "my_load('{0}', globals())"
+      }
+   },
    "pre smop" : {
       "replace" : {
          "example-graphs.mat" : "example_graphs"
       }
    },
    "post smop" : {
-      "prefix" : [
-         "from gboost2 import gboost2"
-      ],
       "replace" : {
          "   "              : "",
          "example_graphs')" : "example-graphs.mat', globals())"
-
       }
    }
 }

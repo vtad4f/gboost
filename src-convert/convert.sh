@@ -15,7 +15,7 @@ function _PrintRun
 
 # Settings
 PY_EXE=python # 'python' for python 2, 'py' for python 3+
-METHOD=smop # rename, smop, ompc
+METHOD=rename # rename, smop, ompc
 
 # Move to the dir containing the m files
 _PrintRun cd original-m

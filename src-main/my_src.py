@@ -1,9 +1,13 @@
 
 
-import numpy
-import scipy.io as sio
-import sys
 
+
+################################################################################
+#
+#  RENAME and SMOP
+#
+################################################################################
+import scipy.io as sio
 
 def my_load(fpath, vars):
    """
@@ -14,6 +18,13 @@ def my_load(fpath, vars):
          vars[name] = value
          
          
+################################################################################
+#
+#  SMOP only
+#
+################################################################################
+import sys
+
 def my_disp(*args):
    """
       BRIEF  Print then force flush
