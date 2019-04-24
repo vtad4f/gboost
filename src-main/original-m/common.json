@@ -1,23 +1,25 @@
 {
-   "prefix" : [
-      "from my_src import *"
-   ],
-   "replace" : {
-      "    "          : "   ",
-      "num2str"       : "str",
-      "length"        : "len",
-      "libsmop"       : "smop.libsmop",
-      "load"          : "my_load",
-      "disp(concat("  : "disp(''.join(",
-      "error(concat(" : "error(''.join(",
-      "concat(['"     : "''.join(['",
-      "concat("       : "my_concat(",
-      "disp"          : "my_disp",
-      "sort("         : "my_sort(",
-      "norm("         : "my_norm(",
-      "pause"         : "my_pause()"
-   },
-   "regex" : {
-      ",nargout=[0-9]+" : ""
+   "smop" : {
+      "prefix" : [
+         "from my_src import *"
+      ],
+      "replace" : {
+         "    "          : "   ",
+         "num2str"       : "str",
+         "length"        : "len",
+         "libsmop"       : "smop.libsmop",
+         "load"          : "my_load",
+         "disp(concat("  : "disp(''.join(",
+         "error(concat(" : "error(''.join(",
+         "concat(['"     : "''.join(['",
+         "concat("       : "my_concat(",
+         "disp"          : "my_disp",
+         "sort("         : "my_sort(",
+         "norm("         : "my_norm(",
+         "pause"         : "my_pause()"
+      },
+      "regex" : {
+         ",nargout=[0-9]+" : ""
+      }
    }
 }

@@ -12,29 +12,39 @@ class Changes(object):
       BRIEF  A collection of to-from replacements
    """
    
-   def __init__(self, path = 'common.json'):
+   def __init__(self, top_key = 'common', path = 'common.json'):
       """
-         BRIEF  These files translated from smop may need some work...
+         BRIEF  These files may need some work...
       """
-      content = OrderedDict()
+      self.prefix  = []
+      self.replace = OrderedDict()
+      self.suffix  = []
+      self.regex   = OrderedDict()
       
       if not path.endswith('.json'):
          path = os.path.splitext(path)[0] + '.json'
          
       if os.path.isfile(path):
          with open(path, 'r') as f:
-            content = json.load(f, object_pairs_hook=OrderedDict)
+            entire_file = json.load(f, object_pairs_hook=OrderedDict)
             
-      self.prefix  = content['prefix']  if 'prefix'  in content else []
-      self.replace = content['replace'] if 'replace' in content else OrderedDict()
-      self.suffix  = content['suffix']  if 'suffix'  in content else []
+         if top_key in entire_file:
+            content = entire_file[top_key]
+            
+            if 'prefix'  in content:
+               self.prefix = content['prefix']
+               
+            if 'replace' in content:
+               self.replace = content['replace']
+               
+            if 'suffix' in content:
+               self.suffix = content['suffix']
       
-      self.regex = OrderedDict()
-      if 'regex' in content:
-         for pattern, replacement in content['regex'].items():
-            self.regex[re.compile(pattern, re.MULTILINE)] = replacement
-            
-            
+            if 'regex' in content:
+               for pattern, replacement in content['regex'].items():
+                  self.regex[re.compile(pattern)] = replacement
+                  
+                  
 class PyFile(object):
    """
       BRIEF  This class represents the python file we are modifying
@@ -48,16 +58,23 @@ class PyFile(object):
       with open(self.path, 'r') as f:
          self.contents = f.read()
          
-   def Change(self):
+   def Change(self, method):
       """
          BRIEF  Replace file contents
       """
-      for changes in [Changes(), Changes(self.path)]:
-         for before, after in changes.replace.items():
-            self.contents = self.contents.replace(before, after)
-         for regex, after in changes.regex.items():
-            self.contents = regex.sub(after, self.contents)
-         self.contents = '\n'.join(changes.prefix + [self.contents] + changes.suffix)
+      for method in ['common', method]:
+         for fpath in ['common', self.path]:
+            changes = Changes(method, fpath)
+            
+            for before, after in changes.replace.items():
+               self.contents = self.contents.replace(before, after)
+               
+            lines = self.contents.split('\n')
+            for i, line in enumerate(lines):
+               for regex, after in changes.regex.items():
+                  lines[i] = regex.sub(after.format(regex.findall(line)), line)
+                  
+            self.contents = '\n'.join(changes.prefix + lines + changes.suffix)
       return self
       
    def Write(self):
@@ -73,7 +90,7 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution
    """
-   for pypath in sys.argv[1:]:
-      PyFile(pypath).Change().Write()
+   for pypath in sys.argv[2:]:
+      PyFile(pypath).Change(sys.argv[1]).Write()
       
       

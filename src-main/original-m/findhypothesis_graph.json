@@ -1,5 +1,7 @@
 {
-   "prefix" : [
-      "from gspan import gspan"
-   ]
+   "smop" : {
+      "prefix" : [
+         "from gspan import gspan"
+      ]
+   }
 }

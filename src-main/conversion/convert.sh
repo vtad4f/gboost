@@ -17,8 +17,7 @@ if [[ $METHOD == 'rename' ]]; then
 elif [[ $METHOD == 'smop' ]]; then
    echo smop *.m
    smop *.m > /dev/null 2>&1 # Convert m to python
-   $PY_EXE ../conversion/post_smop.py *.py # Some additional changes are necessary
-
+   
 elif [[ $METHOD == 'ompc' ]]; then
    for mpath in *.m; do
       echo "$PY_EXE ../../ompc/examples/translate.py $mpath > $(basename $mpath .m).py"
@@ -26,6 +25,9 @@ elif [[ $METHOD == 'ompc' ]]; then
       # $PY_EXE ../../ompc/ompc/ompcply.py $mpath > $(basename $mpath .m).py #2> /dev/null
    done
 fi
+
+# Post processing
+$PY_EXE ../conversion/post_smop.py $METHOD *.py # Some additional changes are necessary
 
 # Move 
 mv *.py ../
