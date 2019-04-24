@@ -1,5 +1,5 @@
 {
-   "smop" : {
+   "post smop" : {
       "prefix" : [
          "from gboost2 import gboost2"
       ],

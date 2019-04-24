@@ -12,7 +12,7 @@ class Changes(object):
       BRIEF  A collection of to-from replacements
    """
    
-   def __init__(self, top_key = 'common', path = 'common.json'):
+   def __init__(self, top_key = 'common', path = 'common'):
       """
          BRIEF  These files may need some work...
       """
@@ -21,11 +21,17 @@ class Changes(object):
       self.suffix  = []
       self.regex   = OrderedDict()
       
-      if not path.endswith('.json'):
-         path = os.path.splitext(path)[0] + '.json'
+      fname = os.path.basename(path)
+      if not fname.endswith('.json'):
+         fname = os.path.splitext(fname)[0] + '.json'
          
-      if os.path.isfile(path):
-         with open(path, 'r') as f:
+      this_path = os.path.join('../post', fname) # relative to this file
+      print(this_path)
+      
+      if os.path.isfile(this_path):
+         print('exists')
+      
+         with open(this_path, 'r') as f:
             entire_file = json.load(f, object_pairs_hook=OrderedDict)
             
          if top_key in entire_file:
@@ -58,13 +64,13 @@ class PyFile(object):
       with open(self.path, 'r') as f:
          self.contents = f.read()
          
-   def Change(self, method):
+   def Change(self, pre_post, specific_method):
       """
          BRIEF  Replace file contents
       """
-      for method in ['common', method]:
+      for method in ['common', specific_method]:
          for fpath in ['common', self.path]:
-            changes = Changes(method, fpath)
+            changes = Changes(pre_post + ' ' + method, fpath)
             
             for before, after in changes.replace.items():
                self.contents = self.contents.replace(before, after)
@@ -90,7 +96,8 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution
    """
-   for pypath in sys.argv[2:]:
-      PyFile(pypath).Change(sys.argv[1]).Write()
+   print(os.getcwd())
+   for pypath in sys.argv[3:]:
+      PyFile(pypath).Change(sys.argv[1], sys.argv[2]).Write()
       
       
