@@ -11,6 +11,7 @@ class Changes(object):
    """
       BRIEF  A collection of to-from replacements
    """
+   SETTINGS_DIR='../../src-convert/settings' # working dir is build/temp
    
    def __init__(self, top_key = 'common', path = 'common'):
       """
@@ -25,7 +26,7 @@ class Changes(object):
       if not fname.endswith('.json'):
          fname = os.path.splitext(fname)[0] + '.json'
          
-      this_path = os.path.join('../settings', fname) # working dir is original-m
+      this_path = os.path.join(Changes.SETTINGS_DIR, fname)
       
       if os.path.isfile(this_path):
          with open(this_path, 'r') as f:

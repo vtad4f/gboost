@@ -1,7 +1,7 @@
 % Example training and testing a 2-class graph boosting classifier
 
 disp(['Loading example graphs...']);
-load example_graphs
+load example-graphs.mat
 
 disp(['   ', num2str(length(train_G)), ' training samples']);
 disp(['   ', num2str(length(test_G)), ' test samples']);
