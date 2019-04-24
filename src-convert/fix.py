@@ -94,12 +94,12 @@ class File(object):
                   if matches:
                      lines[i] = regex.sub(after.format(*matches), line)
                      
-            #More complex - handle functions
+            # Replace matlab function with python function
             if changes.function:
                pending_ret = []
                empty_line = None
                for i, line in enumerate(lines):
-                     
+                  
                   matches = changes.function.findall(line)
                   if matches:
                      lines[i] = 'def' + line.split('=')[1] + ':'
@@ -116,7 +116,7 @@ class File(object):
                      
                if pending_ret:
                   lines[empty_line] = '   return ' + pending_ret
-                     
+                  
             self.contents = '\n'.join(changes.prefix + lines + changes.suffix)
       return self
       

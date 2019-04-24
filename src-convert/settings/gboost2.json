@@ -1,5 +1,5 @@
 {
-   "post smop" : {
+   "post common" : {
       "prefix" : [
          "from lpboost import lpboost",
          "from findhypothesis_graph import findhypothesis_graph"

@@ -1,5 +1,5 @@
 {
-   "post smop" : {
+   "post common" : {
       "prefix" : [
          "from gspan import gspan"
       ]

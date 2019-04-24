@@ -12,13 +12,18 @@
       "prefix" : [
          "from pylab import *"
       ],
+      "replace" : {
+         "||"   : "or",
+         "else" : "else:"
+      },
       "multi-line-regex" : {
          ";$"                : "",
          "%"                 : "#",
          "\\s*\\.\\.\\.\\s*" : " "
       },
       "single-line-regex" : {
-         "@\\(([^)]+)\\)" : "lambda {0}:"
+         "@\\(([^)]+)\\)" : "lambda {0}:",
+         "if (.+)"        : "if {0}:"
       },
       "fix-functions" : "true"
    },
