@@ -27,7 +27,7 @@ elif [[ $METHOD == 'ompc' ]]; then
 fi
 
 # Post processing
-$PY_EXE ../conversion/post_smop.py $METHOD *.py # Some additional changes are necessary
+$PY_EXE ../conversion/post.py $METHOD *.py # Some additional changes are necessary
 
 # Move 
 mv *.py ../
