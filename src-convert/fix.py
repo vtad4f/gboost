@@ -88,12 +88,17 @@ class File(object):
                self.contents = regex.sub(after, self.contents) # TODO - format
                
             lines = self.contents.split('\n')
-            for i, line in enumerate(lines):
-               for regex, after in changes.single_line_regex.items():
+            for regex, after in changes.single_line_regex.items():
+               for i, line in enumerate(lines):
                   matches = regex.findall(line)
                   if matches:
-                     lines[i] = regex.sub(after.format(*matches), line)
-                     
+                     if isinstance(matches[0], tuple):
+                        matches = matches[0]
+                     try:
+                        lines[i] = regex.sub(after.format(*matches), line)
+                     except Exception as e:
+                        print(str(e) + ': ' + regex.pattern + ' @ ' + line)
+                        
             # Replace matlab function with python function
             if changes.function:
                pending_ret = []

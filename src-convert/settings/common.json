@@ -13,9 +13,10 @@
          "from pylab import *"
       ],
       "replace" : {
-         "||"   : "or",
-         "else" : "else:",
-         "end"  : "#end"
+         "||"     : "or",
+         "elseif" : "elif:",
+         "else"   : "else:",
+         "end"    : "#end"
       },
       "multi-line-regex" : {
          ";$"                : "",
@@ -23,10 +24,12 @@
          "\\s*\\.\\.\\.\\s*" : " "
       },
       "single-line-regex" : {
-         "if (.+)"         : "if {0}:",
-         "\\((:,[^)]+)\\)" : "[{0}]",
-         "\\(([^)]+,:)\\)" : "[{0}]",
-         "@\\(([^)]+)\\)"  : "lambda {0}:"
+         "=([^'\\s=,(]+):([^'\\s]+)" : "=range({0}, {1} + 1)",
+         "for ([a-zA-Z0-9_]+)="      : "for {0} in ",
+         "if (.+)"                   : "if {0}:",
+         "\\((:,[^)]+)\\)"           : "[{0}]",
+         "\\(([^)]+,:)\\)"           : "[{0}]",
+         "@\\(([^)]+)\\)"            : "lambda {0}:"
       },
       "fix-functions" : "true"
    },
@@ -34,7 +37,6 @@
       "replace" : {
          "    "          : "   ",
          "libsmop"       : "smop.libsmop",
-         "load"          : "my_load",
          "disp(concat("  : "disp(''.join(",
          "error(concat(" : "error(''.join(",
          "concat(['"     : "''.join(['",

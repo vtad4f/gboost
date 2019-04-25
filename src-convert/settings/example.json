@@ -20,6 +20,7 @@
    "post smop" : {
       "replace" : {
          "   "              : "",
+         "load"             : "my_load",
          "example_graphs')" : "example-graphs.mat', globals())"
       }
    }
