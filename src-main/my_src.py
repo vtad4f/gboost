@@ -1,5 +1,8 @@
 
 
+from py2or3 import *
+import scipy.io as sio
+import sys
 
 
 ################################################################################
@@ -7,7 +10,6 @@
 #  RENAME and SMOP
 #
 ################################################################################
-import scipy.io as sio
 
 def my_load(fpath, vars):
    """
@@ -22,7 +24,7 @@ def my_pause():
    """
       BRIEF  Wait for user input
    """
-   # raw_input() # TODO - uncomment in final revision
+   # Input() # TODO - uncomment in final revision
    
    
 ################################################################################
@@ -30,7 +32,6 @@ def my_pause():
 #  SMOP only
 #
 ################################################################################
-import sys
 
 def my_disp(*args):
    """
