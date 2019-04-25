@@ -80,13 +80,15 @@ class File(object):
          for fpath in ['common', self.path]:
             changes = Changes(pre_post + ' ' + method, fpath)
             
-            # Config driven
+            # 1. Replace
             for before, after in changes.replace.items():
                self.contents = self.contents.replace(before, after)
                
+            # 2. Multi-line regex
             for regex, after in changes.multi_line_regex.items():
                self.contents = regex.sub(after, self.contents) # TODO - format
                
+            # 3. Single-line regex w/ substitution
             lines = self.contents.split('\n')
             for regex, after in changes.single_line_regex.items():
                for i, line in enumerate(lines):
@@ -99,7 +101,7 @@ class File(object):
                      except Exception as e:
                         print(str(e) + ': ' + regex.pattern + ' @ ' + line)
                         
-            # Replace matlab function with python function
+            # 4. Replace matlab function with python function
             if changes.function:
                pending_ret = []
                empty_line = None
