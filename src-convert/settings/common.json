@@ -17,7 +17,9 @@
          "||"     : "or",
          "elseif" : "elif:",
          "else"   : "else:",
-         "end"    : "#end"
+         "end"    : "#end",
+         "true"   : "True",
+         "false"  : "False"
       },
       "multi-line-regex" : {
          ";$"                : "",
@@ -26,8 +28,9 @@
       },
       "single-line-regex" : {
          "=([^'\\s=,(]+):([^'\\s]+)"                    : "=range({0}, {1} + 1)",
-         "for ([a-zA-Z0-9_]+)="                         : "for {0} in ",
+         "for ([a-zA-Z0-9_]+)=(.+)"                     : "for {0} in {1}:",
          "if (.+)"                                      : "if {0}:",
+         "while (.+)"                                   : "while {0}:",
          "\\((:,[^)]+)\\)"                              : "[{0}]",
          "\\(([^)]+,:)\\)"                              : "[{0}]",
          "@\\(([^)]+)\\)"                               : "lambda {0}:",

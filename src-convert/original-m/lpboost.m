@@ -167,23 +167,23 @@ while true
       % class decision, not their absence.
       disp(['1.5-class LPBoosting']);
       
-      % cvx_begin - TODO
-         % variables opt_alpha(m) opt_rho1(1) opt_rho2(1) opt_xi1(l1) opt_xi2(l2);
-         % dual variables d_u1{l1} d_u2{l2};
-         % minimize (-opt_rho1 + opt_rho2 + sum(opt_xi1)/(l1*nu) + sum(opt_xi2)/(l2*nu));
-            % for k=1:l1
-               % HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k};
-            % end
-            % for k=1:l2
-               % HM(l1+k,:)*opt_alpha - opt_rho2 - opt_xi2(k) <= 0 : d_u2{k};
-            % end
-            % sum(opt_alpha) == 1;
-            % opt_alpha >= 0;
-            % opt_xi1 >= 0;
-            % opt_xi2 >= 0;
-            % opt_rho1 >= 0;
-            % opt_rho2 >= 0;
-      % cvx_end
+      cvx_begin
+         variables opt_alpha(m) opt_rho1(1) opt_rho2(1) opt_xi1(l1) opt_xi2(l2);
+         dual variables d_u1{l1} d_u2{l2};
+         minimize (-opt_rho1 + opt_rho2 + sum(opt_xi1)/(l1*nu) + sum(opt_xi2)/(l2*nu));
+            for k=1:l1
+               HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k};
+            end
+            for k=1:l2
+               HM(l1+k,:)*opt_alpha - opt_rho2 - opt_xi2(k) <= 0 : d_u2{k};
+            end
+            sum(opt_alpha) == 1;
+            opt_alpha >= 0;
+            opt_xi1 >= 0;
+            opt_xi2 >= 0;
+            opt_rho1 >= 0;
+            opt_rho2 >= 0;
+      cvx_end
 
       rho1 = opt_rho1;
       rho2 = opt_rho2;
@@ -192,18 +192,18 @@ while true
       % 1-class LPBoosting
       disp(['1-class LPBoosting']);
       
-      % cvx_begin - TODO
-         % variables opt_alpha(m) opt_rho1(1) opt_xi1(l1);
-         % dual variables d_u1{l1};
-         % minimize (-opt_rho1 + sum(opt_xi1)/(l1*nu));
-            % for k=1:l1
-               % HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k};
-            % end
-            % sum(opt_alpha) == 1;
-            % opt_alpha >= 0;
-            % opt_xi1 >= 0;
-            % opt_rho1 >= 0;
-      % cvx_end
+      cvx_begin
+         variables opt_alpha(m) opt_rho1(1) opt_xi1(l1);
+         dual variables d_u1{l1};
+         minimize (-opt_rho1 + sum(opt_xi1)/(l1*nu));
+            for k=1:l1
+               HM(k,:)*opt_alpha - opt_rho1 + opt_xi1(k) >= 0 : d_u1{k};
+            end
+            sum(opt_alpha) == 1;
+            opt_alpha >= 0;
+            opt_xi1 >= 0;
+            opt_rho1 >= 0;
+      cvx_end
 
       rho1 = opt_rho1;
       rho = [rho1];
@@ -215,24 +215,24 @@ while true
          error (['D (', num2str(D), ') outside dual feasibility boundary.'])
       end
 
-      % cvx_begin - TODO
-         % variables opt_alpha(m) opt_rho(1) opt_xi1(l1) opt_xi2(l2);
-         % dual variables d_u1{l1} d_u2{l2};
-         % minimize (-opt_rho + D*(sum(opt_xi1)+sum(opt_xi2)));
-            % for k=1:l1
-               % % Y is 1
-               % %HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k};
-               % HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k};
-            % end
-            % for k=1:l2
-               % % Y is -1, hence <=
-               % -HM(l1+k,:)*opt_alpha - opt_rho + opt_xi2(k) >= 0 : d_u2{k};
-            % end
-            % sum(opt_alpha) == 1;
-            % opt_alpha >= 0;
-            % opt_xi1 >= 0;
-            % opt_xi2 >= 0;
-      % cvx_end
+      cvx_begin
+         variables opt_alpha(m) opt_rho(1) opt_xi1(l1) opt_xi2(l2);
+         dual variables d_u1{l1} d_u2{l2};
+         minimize (-opt_rho + D*(sum(opt_xi1)+sum(opt_xi2)));
+            for k=1:l1
+               % Y is 1
+               %HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k};
+               HM(k,:)*opt_alpha - opt_rho + opt_xi1(k) >= 0 : d_u1{k};
+            end
+            for k=1:l2
+               % Y is -1, hence <=
+               -HM(l1+k,:)*opt_alpha - opt_rho + opt_xi2(k) >= 0 : d_u2{k};
+            end
+            sum(opt_alpha) == 1;
+            opt_alpha >= 0;
+            opt_xi1 >= 0;
+            opt_xi2 >= 0;
+      cvx_end
 
       rho = opt_rho;
    end

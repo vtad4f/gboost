@@ -1,7 +1,15 @@
 {
+   "pre common" : {
+      "replace" : {
+         "cvx_end" : "@cvx_end"
+      },
+      "multi-line-regex" : {
+         "cvx_begin[^@]+@cvx_end" : "raise Exception('TODO - cvx')"
+      }
+   },
    "post common" : {
       "prefix" : [
-         "#import cvxpy as cvx # TODO"
+         "#import cvxpy as cvx # TODO - cvx"
       ]
    }
 }
