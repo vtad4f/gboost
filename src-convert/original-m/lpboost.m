@@ -135,7 +135,7 @@ while true
 
    % Stopping condition: either no hypotheses are there anymore or best
    % hypothesis gain is too small.
-    if length(h) == 0 || oval <= (theta + conv_epsilon)
+   if length(h) == 0 || oval <= (theta + conv_epsilon)
       disp(['LPBoost optimality reached after ', num2str(iter), ' iterations.']);
 
       if length(h) == 0

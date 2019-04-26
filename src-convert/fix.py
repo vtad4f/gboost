@@ -163,12 +163,6 @@ class File(object):
          
       self.contents = '\n'.join(lines)
       
-   def _TranslateMultiplication(self):
-      """
-      """
-      # "([^.])\\*", "{0}@"
-      # "\\.\\*", "*"
-      
    def _AddPrefixSuffix(self, prefixes, suffixes):
       """
          BRIEF  

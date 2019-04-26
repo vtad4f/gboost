@@ -1,6 +1,6 @@
 
 
-PY_EXE=python # 'python' for python 2, 'py' for python 3+
+PY_EXE=py # 'python' for python 2, 'py' for python 3+
 
 
 ################################################################################
