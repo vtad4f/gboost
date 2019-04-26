@@ -5,13 +5,35 @@ PY_EXE=python # 'python' for python 2, 'py' for python 3+
 
 ################################################################################
 #
-#  @brief  Import the python module if not already installed
+#  @brief  Return true if the OS is linux, else false (e.g. cygwin = false)
 #
 ################################################################################
-function _Import
+function _OsIsLinux
+{
+   if [ "$(uname)" == "Linux" ]; then return 0 ; else return 1 ; fi
+}
+
+
+################################################################################
+#
+#  @brief  Return true if the package is already installed, else false
+#
+################################################################################
+function _Importable
 {
    $PY_EXE -c "import $1" 2> /dev/null
-   if [[ $? -gt 0 ]]; then
+   return $?
+}
+
+
+################################################################################
+#
+#  @brief  Import the python module
+#
+################################################################################
+function _PipInstall
+{
+   if ! _Importable "$1" ; then
       echo "$PY_EXE -m pip install $1"
       $PY_EXE -m pip install $1
    fi
@@ -71,9 +93,9 @@ function _EvalArg
 #  @brief  Main execution
 #
 ################################################################################
-_Import smop
-_Import matplotlib
-_Import cvxpy
+_PipInstall smop
+_PipInstall matplotlib
+_OsIsLinux && _PipInstall cvxpy # TODO - vs140 dependency on windows...
 _EvalArg "$1" "make" && make
 _EvalArg "$2" "run" && cd src-main && $PY_EXE example.py
 
