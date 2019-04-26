@@ -4,12 +4,12 @@
          "cvx_end" : "@cvx_end"
       },
       "multi-line-regex" : {
-         "cvx_begin[^@]+@cvx_end" : "raise Exception('TODO - cvx')"
+         "cvx_begin[^@]+@cvx_end" : "raise Exception('TODO - this was a matlab cvx code block')"
       }
    },
    "post common" : {
       "prefix" : [
-         "#import cvxpy as cvx # TODO - cvx"
+         "import cvxpy as cvx # TODO - https://stackoverflow.com/questions/36755392/convert-a-semidefinite-program-from-cvx-to-cvxpy"
       ]
    }
 }
