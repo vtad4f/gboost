@@ -15,13 +15,15 @@
          "from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/"
       ],
       "replace" : {
-         "||"     : "or",
-         "&&"     : "and",
-         "~="     : "!=",
-         "elseif" : "elif",
-         "else"   : "else:",
-         "true"   : "True",
-         "false"  : "False"
+         "||"      : "or",
+         "&&"      : "and",
+         "~="      : "!=",
+         "elseif"  : "elif",
+         "else"    : "else:",
+         "true"    : "True",
+         "false"   : "False",
+         "isempty" : "my_isempty",
+         "size("   : "my_size("
       },
       "multi-line-regex" : {
          ";$"                : "",
