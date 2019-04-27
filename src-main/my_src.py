@@ -21,6 +21,14 @@ def my_product(*args):
    raise Exception("TODO - Implement")
    
    
+def my_arg_reader(*args):
+   """
+      BRIEF  Analyze the args and return values
+   """
+   nargin = sum([arg is not None for arg in args])
+   return nargin
+   
+   
 ################################################################################
 #
 #  RENAME and SMOP
