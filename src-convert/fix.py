@@ -11,7 +11,7 @@ class Changes(object):
    """
       BRIEF  A collection of to-from replacements
    """
-   SETTINGS_DIR='../../src-convert/settings' # working dir is build/temp
+   SETTINGS_DIR='../settings' # working dir is src-convert/temp
    
    def __init__(self, top_key = 'common', path = 'common'):
       """

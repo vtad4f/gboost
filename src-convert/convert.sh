@@ -17,19 +17,20 @@ function _PrintRun
 PY_EXE=py # 'python' for python 2, 'py' for python 3+
 METHOD=rename # rename, smop, ompc
 
+# Create a temp dir where the translated files will live
+_PrintRun mkdir -p temp
+
 # Move to the dir containing the m files
 _PrintRun cd original-m
 
-# Move copies of the files
-temp_dir=../../build/temp
-_PrintRun mkdir -p $temp_dir
+# Copy the m files to the temp dir and move to it
 for mpath in *.m; do
-   _PrintRun cp $mpath $temp_dir
+   _PrintRun cp $mpath ../temp
 done
-_PrintRun cd $temp_dir
+_PrintRun cd ../temp
 
 # Pre processing
-_PrintRun $PY_EXE ../../src-convert/fix.py pre $METHOD *.m # Additional changes are necessary
+_PrintRun $PY_EXE ../fix.py pre $METHOD *.m # Additional changes are necessary
 
 # Convert the files
 if [[ $METHOD == 'rename' ]]; then
@@ -46,15 +47,17 @@ elif [[ $METHOD == 'ompc' ]]; then
       pypath=$(basename $mpath .m).py
       ompc_dir=../../ompc/
       _PrintRun $PY_EXE $ompc_dir/examples/translate.py $mpath > $pypath #2> /dev/null
-      # _PrintRun $PY_EXE $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
+      _PrintRun $PY_EXE $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
    done
 fi
 
 # Post processing
-_PrintRun $PY_EXE ../../src-convert/fix.py post $METHOD *.py # Additional changes are necessary
-_PrintRun sed -i 's/\r$//' *.py
+_PrintRun $PY_EXE ../fix.py post $METHOD *.py # Additional changes are necessary
+_PrintRun sed -i 's/\r$//' *.py # Remove \r from newlines that python adds on windows
 
 # Move the files
-_PrintRun mv *.py ../../src-main/
+for pypath in *.py; do
+   _PrintRun cp $pypath ../../src-main/
+done
 echo "Done!"
 
