@@ -4,8 +4,9 @@
          "from my_src import *"
       ],
       "replace" : {
-         "num2str" : "str",
-         "length"  : "len"
+         "num2str(" : "str(",
+         "length("  : "len(",
+         "sort("    : "my_sort("
       }
    },
    "post rename" : {
@@ -63,7 +64,6 @@
          "concat(['"     : "''.join(['",
          "concat("       : "my_concat(",
          "disp"          : "my_disp",
-         "sort("         : "my_sort(",
          "norm("         : "my_norm("
       },
       "single-line-regex" : {
