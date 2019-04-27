@@ -55,9 +55,9 @@ class Changes(object):
                   self.multi_line_regex[re.compile(pattern, re.MULTILINE)] = replacement
                   
             if 'fix-functions' in content:
-               if content['fix-functions'] == "true":
-                  self.fix_functions = True
-                  
+               self.fix_functions = True
+               if content['fix-functions']:
+                  self.fix_functions = content['fix-functions']
                   
 class File(object):
    """
@@ -92,13 +92,11 @@ class File(object):
       for changes in all_changes:
          self._SingleLineRegex(changes.single_line_regex)
       for changes in all_changes:
-         if changes.fix_functions:
-            self._TranslateFunctions()
+         self._TranslateFcnDefs(changes.fix_functions)
       for changes in all_changes:
-         if changes.fix_functions:
-            self._Add_nargout()
+         self._AddNargoutToFcnCalls(changes.fix_functions)
       for changes in all_changes:
-         self._AddPrefixSuffix(changes.prefix, changes.suffix)
+         self._AddFilePrefixSuffix(changes.prefix, changes.suffix)
          
       return self
       
@@ -139,50 +137,55 @@ class File(object):
                      print(str(e) + ': ' + regex.pattern + ' #### ' + lines[i])
       self.contents = '\n'.join(lines)
       
-   def _TranslateFunctions(self):
+   def _TranslateFcnDefs(self, fix_functions):
       """
          BRIEF  This was a bit too complicated for a one-line-regex in the
                 settings, so a separate function was created for it
       """
-      lines = self.contents.split('\n')
-      pending_ret = ''
-      empty_line = None
-      for i, line in enumerate(lines):
-         matches = File.FCN_DEF.findall(line)
-         if matches:
-            ret, name, args = matches[0]
-            args_none = ', '.join(map('{0}=None'.format, args.split(', ')))
-            args += ', **kwargs'
-            args_none += ', **kwargs'
-            lines[i] = 'def {0}({1}):\n   {2}({3})'.format(
-               name, args_none, "nargin, nargout = my_arg_reader", args)
-            if pending_ret:
-               lines[empty_line] = '   return ' + pending_ret
-            pending_ret = ret
-         elif pending_ret:
-            lines[i] = '   ' + line
-         if line.strip():
-            empty_line = None
-         elif empty_line is None:
-            empty_line = i
-      if pending_ret:
-         lines[empty_line] = '   return ' + pending_ret
-      self.contents = '\n'.join(lines)
+      if fix_functions:
+         prefixes = fix_functions['prefix'] if 'prefix' in fix_functions else OrderedDict()
+         
+         lines = self.contents.split('\n')
+         pending_ret = ''
+         empty_line = None
+         for i, line in enumerate(lines):
+            matches = File.FCN_DEF.findall(line)
+            if matches:
+               ret, name, args = matches[0]
+               args_none = ', '.join(map('{0}=None'.format, args.split(', ')))
+               args += ', **kwargs'
+               args_none += ', **kwargs'
+               prefix = prefixes[name] if name in prefixes else '' # configurable
+               lines[i] = 'def {0}({1}):\n   {2}({3})\n   {4}'.format(
+                  name, args_none, "nargin, nargout = my_arg_reader", args, prefix)
+               if pending_ret:
+                  lines[empty_line] = '   return ' + pending_ret
+               pending_ret = ret
+            elif pending_ret:
+               lines[i] = '   ' + line
+            if line.strip():
+               empty_line = None
+            elif empty_line is None:
+               empty_line = i
+         if pending_ret:
+            lines[empty_line] = '   return ' + pending_ret
+         self.contents = '\n'.join(lines)
       
-   def _Add_nargout(self):
+   def _AddNargoutToFcnCalls(self, fix_functions):
       """
          BRIEF  Fix the function call; The number of returns may vary...
       """
-      lines = self.contents.split('\n')
-      for i, line in enumerate(lines):
-         matches = File.FCN_CALL.findall(line)
-         if matches:
-            space, ret, the_rest = matches[0]
-            nargout = len(ret.split(','))
-            lines[i] = space + ret + the_rest + ', nargout={0})'.format(nargout)
-      self.contents = '\n'.join(lines)
+      if fix_functions:
+         lines = self.contents.split('\n')
+         for i, line in enumerate(lines):
+            matches = File.FCN_CALL.findall(line)
+            if matches:
+               space, ret, the_rest = matches[0]
+               nargout = len(ret.split(','))
+               lines[i] = space + ret + the_rest + ', nargout={0})'.format(nargout)
+         self.contents = '\n'.join(lines)
       
-   def _AddPrefixSuffix(self, prefixes, suffixes):
+   def _AddFilePrefixSuffix(self, prefixes, suffixes):
       """
          BRIEF  
       """
