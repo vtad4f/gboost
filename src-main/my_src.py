@@ -21,12 +21,13 @@ def my_product(*args):
    raise Exception("TODO - Implement")
    
    
-def my_arg_reader(*args):
+def my_arg_reader(*args, **kwargs):
    """
       BRIEF  Analyze the args and return values
    """
    nargin = sum([arg is not None for arg in args])
-   return nargin
+   nargout = kwargs['nargout'] if 'nargout' in kwargs else None
+   return nargin, nargout
    
    
 ################################################################################
@@ -51,7 +52,7 @@ def my_pause():
    # Input() # TODO - uncomment in final revision
    
    
-def my_sort(numpy_ndarray, n, descr): # TODO - does n matter?
+def my_sort(numpy_ndarray, n, descr, nargout): # TODO - does n matter?
    """
       https://stackoverflow.com/questions/28512237/python-equivalent-to-matlab-a-b-sorty
       https://stackoverflow.com/questions/26984414/efficiently-sorting-a-numpy-array-in-descending-order
@@ -60,18 +61,19 @@ def my_sort(numpy_ndarray, n, descr): # TODO - does n matter?
       
       TODO - haven't tested this method!
    """
-   # print(numpy_ndarray)
    cpy = numpy_ndarray.copy()
-   if descr == 'ascend':
-      cpy.sort(kind='mergesort') # TODO - need to specify axis?
-   elif descr == 'descend':
-      cpy[::-1].sort(kind='mergesort') # TODO - argsort if descending?
-   else:
-      raise ValueError(descr)
-   # print(cpy)
-   return cpy, None # TODO - numpy argsort
-   
-   
+   if nargout == 2:
+      # print(numpy_ndarray)
+      if descr == 'ascend':
+         cpy.sort(kind='mergesort') # TODO - need to specify axis?
+      elif descr == 'descend':
+         cpy[::-1].sort(kind='mergesort') # TODO - argsort if descending?
+      else:
+         raise ValueError(descr)
+      # print(cpy)
+      return cpy, None # TODO - numpy argsort
+      
+      
 ################################################################################
 #
 #  SMOP only

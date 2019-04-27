@@ -63,7 +63,8 @@ class File(object):
    """
       BRIEF  This class represents the file we are modifying
    """
-   M_FUNCTION = re.compile(r"function\s*\[([^\]]+)\]\s*=\s*([^(\s]+)\s*\(([^)]+)\)")
+   FCN_DEF = re.compile(r"function\s*\[([^\]]+)\]\s*=\s*([^(\s]+)\s*\(([^)]+)\)")
+   FCN_CALL = re.compile(r"^(\s*)\[([^\]]+)\](.+)\)\s*$")
    SUB = '!!' # something not present in the file
    INDENT = '   '
    
@@ -93,6 +94,9 @@ class File(object):
       for changes in all_changes:
          if changes.fix_functions:
             self._TranslateFunctions()
+      for changes in all_changes:
+         if changes.fix_functions:
+            self._Add_nargout()
       for changes in all_changes:
          self._AddPrefixSuffix(changes.prefix, changes.suffix)
          
@@ -141,42 +145,41 @@ class File(object):
                 settings, so a separate function was created for it
       """
       lines = self.contents.split('\n')
-      
       pending_ret = ''
       empty_line = None
-      
       for i, line in enumerate(lines):
-         
-         matches = File.M_FUNCTION.findall(line)
+         matches = File.FCN_DEF.findall(line)
          if matches:
-         
             ret, name, args = matches[0]
             args_none = ', '.join(map('{0}=None'.format, args.split(', ')))
-            
+            args += ', **kwargs'
+            args_none += ', **kwargs'
             lines[i] = 'def {0}({1}):\n   {2}({3})'.format(
-               name,
-               args_none,
-               "nargin = my_arg_reader",
-               args
-            )
-            
+               name, args_none, "nargin, nargout = my_arg_reader", args)
             if pending_ret:
                lines[empty_line] = '   return ' + pending_ret
-               
             pending_ret = ret
-            
          elif pending_ret:
             lines[i] = '   ' + line
-            
          if line.strip():
             empty_line = None
-            
          elif empty_line is None:
             empty_line = i
-            
       if pending_ret:
          lines[empty_line] = '   return ' + pending_ret
-         
+      self.contents = '\n'.join(lines)
+      
+   def _Add_nargout(self):
+      """
+         BRIEF  Fix the function call; The number of returns may vary...
+      """
+      lines = self.contents.split('\n')
+      for i, line in enumerate(lines):
+         matches = File.FCN_CALL.findall(line)
+         if matches:
+            space, ret, the_rest = matches[0]
+            nargout = len(ret.split(','))
+            lines[i] = space + ret + the_rest + ', nargout={0})'.format(nargout)
       self.contents = '\n'.join(lines)
       
    def _AddPrefixSuffix(self, prefixes, suffixes):
