@@ -70,7 +70,7 @@ class File(object):
    
    def __init__(self, path):
       """
-         BRIEF  Save the path and file contents
+         BRIEF  Cache the file path and contents
       """
       self.path = path
       with open(self.path, 'r') as f:
@@ -127,6 +127,7 @@ class File(object):
          for i in range(len(lines)):
             matches = regex.findall(lines[i])
             if matches:
+               # self._DebugPrint(regex.pattern, matches, after, lines[i])
                lines[i] = regex.sub(File.SUB, lines[i])
                for match in matches:
                   if not isinstance(match, tuple):
@@ -134,7 +135,8 @@ class File(object):
                   try:
                      lines[i] = lines[i].replace(File.SUB, after.format(*match), 1)
                   except Exception as e:
-                     print(str(e) + ': ' + regex.pattern + ' #### ' + lines[i])
+                     self._DebugPrint(regex.pattern, matches, after, lines[i])
+                     break
       self.contents = '\n'.join(lines)
       
    def _TranslateFcnDefs(self, fix_functions):
@@ -187,9 +189,15 @@ class File(object):
       
    def _AddFilePrefixSuffix(self, prefixes, suffixes):
       """
-         BRIEF  
+         BRIEF  Add a prefix or suffix to the whole file
       """
       self.contents = '\n'.join(prefixes + self.contents.split('\n') + suffixes)
+      
+   def _DebugPrint(*args):
+      """
+         BRIEF  This should stand out compared to all the other output
+      """
+      print(' #### '.join(map(str, args)))
       
    def Write(self):
       """
