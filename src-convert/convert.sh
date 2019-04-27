@@ -52,6 +52,7 @@ fi
 
 # Post processing
 _PrintRun $PY_EXE ../../src-convert/fix.py post $METHOD *.py # Additional changes are necessary
+_PrintRun sed -i 's/\r$//' *.py
 
 # Move the files
 _PrintRun mv *.py ../../src-main/
