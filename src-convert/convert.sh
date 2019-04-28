@@ -17,17 +17,14 @@ function _PrintRun
 PY_EXE=py # 'python' for python 2, 'py' for python 3+
 METHOD=rename # rename, smop, ompc
 
-# Create a temp dir where the translated files will live
-_PrintRun mkdir -p temp
-
 # Move to the dir containing the m files
-_PrintRun cd original-m
+cd original-m
 
 # Copy the m files to the temp dir and move to it
 for mpath in *.m; do
-   _PrintRun cp $mpath ../temp
+   cp $mpath ../temp
 done
-_PrintRun cd ../temp
+cd ../temp
 
 # Pre processing
 _PrintRun $PY_EXE ../fix.py pre $METHOD *.m # Additional changes are necessary
