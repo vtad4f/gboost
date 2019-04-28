@@ -193,7 +193,7 @@ class File(object):
       """
       self.contents = '\n'.join(prefixes + self.contents.split('\n') + suffixes)
       
-   def _DebugPrint(*args):
+   def _DebugPrint(self, *args):
       """
          BRIEF  This should stand out compared to all the other output
       """
