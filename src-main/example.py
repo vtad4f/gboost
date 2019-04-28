@@ -1,40 +1,35 @@
+from __future__ import division
+from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/
+from gboost2 import gboost2
+from my_src import *
 # Example training and testing a 2-class graph boosting classifier
 
-import gboost2
-import gboost1d5
-import lpboost
-import rocscore
-import findhypothesis_graph
-import scipy.io as sio
+disp(['Loading example graphs '])
+my_load('example-graphs.mat', globals())
 
-print(' '.join(['Loading example graphs...']))
-mat = sio.loadmat('example-graphs.mat')
-train_G = mat['train_G']
-test_G = mat['test_G']
+disp(['   ', str(len(train_G)), ' training samples'])
+disp(['   ', str(len(test_G)), ' test samples'])
+disp(' ')
 
-print(' '.join(['   ', str(len(train_G)), ' training samples']))
-print(' '.join(['   ', str(len(test_G)), ' test samples']))
-print(' ')
+disp(['We train a 2-class graph boosting classifier.'])
+disp(['the settings are:'])
+disp(['   nu = 0.2, the LPBoost nu-parameter controlling training accuracy'])
+disp(['   conv_epsilon = 0.05, the LPBoost convergence tolerance parameter'])
+disp(['   max_col = 25, generate 25 hypotheses in each iteration (multiple pricing)'])
+disp(' ')
+disp(['Please press return to start training '])
+my_pause()
 
-print(' '.join(['We train a 2-class graph boosting classifier.']))
-print(' '.join(['the settings are:']))
-print(' '.join(['   nu = 0.2, the LPBoost nu-parameter controlling training accuracy']))
-print(' '.join(['   conv_epsilon = 0.05, the LPBoost convergence tolerance parameter']))
-print(' '.join(['   max_col = 25, generate 25 hypotheses in each iteration (multiple pricing)']))
-print(' ')
-print(' '.join(['Please press return to start training...']))
-input()
+cl, cfun = gboost2 (train_G, train_Y, 0.2, 0.05, nargout=2)
+disp(['The classifier has been trained successfully.'])
+disp(['There are ', str(len(find(cl.alpha > 1e-5))), ' active subgraph stumps.'])
+disp(['Please press return to test the classifier '])
+my_pause()
 
-cl, cfun = gboost2 (train_G, train_Y, 0.2, 0.05)
-print(' '.join(['The classifier has been trained successfully.']))
-print(' '.join(['There are ', str(len(find(cl.alpha > 1e-5))), ' active subgraph stumps.']))
-print(' '.join(['Please press return to test the classifier...']))
-input()
-
-Yout, Yreal, GY = cfun (test_G)
+Yout, Yreal, GY = cfun (test_G, nargout=3)
 accuracy = len(find(Yout == test_Y))/len(test_Y)
-print(' '.join(['   test accuracy = ', str(accuracy)]))
-[auc, eer, curve] = rocscore (Yreal, test_Y)
-print(' '.join(['   test ROC AUC = ', str(auc)]))
-print(' '.join(['   test ROC EER = ', str(eer)]))
+disp(['   test accuracy = ', str(accuracy)])
+auc, eer, curve = rocscore (Yreal, test_Y, nargout=3)
+disp(['   test ROC AUC = ', str(auc)])
+disp(['   test ROC EER = ', str(eer)])
 
