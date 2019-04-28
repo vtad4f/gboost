@@ -2,19 +2,34 @@
 
 ################################################################################
 #
-#  @brief  Print the cmd then execute it
+#  @brief  Run python with the provided args
 #
 ################################################################################
-function _PrintRun
+function _TypeExists { type $1 > /dev/null 2>&1 ; return $? ; }
+function _GetPyExe
 {
-   echo "$@"
-   "$@"
-   return $?
+   _TypeExists py      && echo -n py      && return 0
+   _TypeExists python3 && echo -n python3 && return 0
+   _TypeExists python  && echo -n python  && return 0
+   return 1
+}
+function _RunPyExe
+{
+   local py_exe
+   py_exe=$(_GetPyExe) || return 1
+   $py_exe "$@" ; return $?
 }
 
 
+################################################################################
+#
+#  @brief  Print the cmd then execute it
+#
+################################################################################
+function _PrintRun { echo "$@" ; "$@" ; return $? ; }
+
+
 # Settings
-PY_EXE=py # 'python' for python 2, 'py' for python 3+
 METHOD=rename # rename, smop, ompc
 
 # Move to the dir containing the m files
@@ -27,7 +42,7 @@ done
 cd ../temp
 
 # Pre processing
-_PrintRun $PY_EXE ../fix.py pre $METHOD *.m # Additional changes are necessary
+_PrintRun _RunPyExe ../fix.py pre $METHOD *.m # Additional changes are necessary
 
 # Convert the files
 if [[ $METHOD == 'rename' ]]; then
@@ -43,13 +58,13 @@ elif [[ $METHOD == 'ompc' ]]; then
    for mpath in *.m; do
       pypath=$(basename $mpath .m).py
       ompc_dir=../../ompc/
-      _PrintRun $PY_EXE $ompc_dir/examples/translate.py $mpath > $pypath #2> /dev/null
-      _PrintRun $PY_EXE $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
+      _PrintRun _RunPyExe $ompc_dir/examples/translate.py $mpath > $pypath #2> /dev/null
+      _PrintRun _RunPyExe $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
    done
 fi
 
 # Post processing
-_PrintRun $PY_EXE ../fix.py post $METHOD *.py # Additional changes are necessary
+_PrintRun _RunPyExe ../fix.py post $METHOD *.py # Additional changes are necessary
 _PrintRun sed -i 's/\r$//' *.py # Remove \r from newlines that python adds on windows
 
 # Move the files

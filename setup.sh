@@ -1,8 +1,5 @@
 
 
-PY_EXE=py # 'python' for python 2, 'py' for python 3+
-
-
 ################################################################################
 #
 #  @brief  Return true if the OS is linux, else false (e.g. cygwin = false)
@@ -16,12 +13,46 @@ function _OsIsLinux
 
 ################################################################################
 #
+#  @brief  Run python with the provided args
+#
+################################################################################
+function _TypeExists { type $1 > /dev/null 2>&1 ; return $? ; }
+function _GetPyExe
+{
+   _TypeExists py      && echo -n py      && return 0
+   _TypeExists python3 && echo -n python3 && return 0
+   _TypeExists python  && echo -n python  && return 0
+   return 1
+}
+function _RunPyExe
+{
+   local py_exe
+   py_exe=$(_GetPyExe) || return 1
+   $py_exe "$@" ; return $?
+}
+
+
+################################################################################
+#
+#  @brief  If the python version is 3 return true, else false
+#
+################################################################################
+function _IsPy3
+{
+   local major_ver
+   major_ver=$(_RunPyExe --version | cut -d ' ' -f 2 | cut -d '.' -f 1)
+   if [[ "$major_ver" == "3" ]]; then return 0 ; else return 1 ; fi
+}
+
+
+################################################################################
+#
 #  @brief  Return true if the package is already installed, else false
 #
 ################################################################################
 function _Importable
 {
-   $PY_EXE -c "import $1" 2> /dev/null
+   _RunPyExe -c "import $1" 2> /dev/null
    return $?
 }
 
@@ -34,8 +65,8 @@ function _Importable
 function _PipInstall
 {
    if ! _Importable "$1" ; then
-      echo "$PY_EXE -m pip install $1"
-      $PY_EXE -m pip install $1
+      echo "$(_GetPyExe) -m pip install $1"
+      _RunPyExe -m pip install $1
    fi
 }
 
@@ -93,9 +124,11 @@ function _EvalArg
 #  @brief  Main execution
 #
 ################################################################################
+# ! _OsIsLinux && echo "Linux is required for pycvx to install" && exit 1
+! _IsPy3 && echo "Python 3 is required for the @ operator" && exit 2
 _PipInstall smop
 _PipInstall matplotlib
-_OsIsLinux && _PipInstall cvxpy # TODO - vs140 dependency on windows...
+#_PipInstall cvxpy # TODO - vs140 dependency on windows...
 _EvalArg "$1" "make" && make
-_EvalArg "$2" "run" && cd src-main && $PY_EXE example.py
+_EvalArg "$2" "run" && cd src-main && _RunPyExe example.py
 
