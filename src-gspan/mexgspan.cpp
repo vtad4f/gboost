@@ -68,7 +68,7 @@
 
 /* [graphs, count] = mexgspan (G, minsup, maxpat);
  */
-inline void
+void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
 	if (nlhs > 3) {
