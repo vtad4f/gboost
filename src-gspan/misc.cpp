@@ -76,8 +76,8 @@ void History::build (Graph &graph, PDFS *e)
 bool get_forward_rmpath (Graph &graph, Edge *e, int minlabel, History& history, EdgeList &result)
 {
 	result.clear ();
-	assert (e->to >= 0 && e->to < graph.size ());
-	assert (e->from >= 0 && e->from < graph.size ());
+	assert (e->to >= 0 && static_cast<size_t>(e->to) < graph.size ());
+	assert (e->from >= 0 && static_cast<size_t>(e->from) < graph.size ());
 	int tolabel = graph[e->to].label;
 
 	for (Vertex::edge_iterator it = graph[e->from].edge.begin() ;
@@ -104,7 +104,7 @@ bool get_forward_pure (Graph &graph, Edge *e, int minlabel, History& history, Ed
 {
 	result.clear ();
 
-	assert (e->to >= 0 && e->to < graph.size ());
+	assert (e->to >= 0 && static_cast<size_t>(e->to) < graph.size ());
 
 	/* Walk all edges leaving from vertex e->to.
 	 */
@@ -113,7 +113,7 @@ bool get_forward_pure (Graph &graph, Edge *e, int minlabel, History& history, Ed
 	{
 		/* -e-> [e->to] -it-> [it->to]
 		 */
-		assert (it->to >= 0 && it->to < graph.size ());
+		assert (it->to >= 0 && static_cast<size_t>(it->to) < graph.size ());
 		if (minlabel > graph[it->to].label || history.hasVertex (it->to))
 			continue;
 
@@ -130,7 +130,7 @@ bool get_forward_root (Graph &g, Vertex &v, EdgeList &result)
 {
 	result.clear ();
 	for (Vertex::edge_iterator it = v.edge.begin(); it != v.edge.end(); ++it) {
-		assert (it->to >= 0 && it->to < g.size ());
+		assert (it->to >= 0 && static_cast<size_t>(it->to) < g.size ());
 		if (v.label <= g[it->to].label)
 			result.push_back (&(*it));
 	}
@@ -151,9 +151,9 @@ Edge *get_backward (Graph &graph, Edge* e1, Edge* e2, History& history)
 	if (e1 == e2)
 		return 0;
 
-	assert (e1->from >= 0 && e1->from < graph.size ());
-	assert (e1->to >= 0 && e1->to < graph.size ());
-	assert (e2->to >= 0 && e2->to < graph.size ());
+	assert (e1->from >= 0 && static_cast<size_t>(e1->from)< graph.size ());
+	assert (e1->to >= 0 && static_cast<size_t>(e1->to) < graph.size ());
+	assert (e2->to >= 0 && static_cast<size_t>(e2->to) < graph.size ());
 
 	for (Vertex::edge_iterator it = graph[e2->to].edge.begin() ;
 		it != graph[e2->to].edge.end() ; ++it)

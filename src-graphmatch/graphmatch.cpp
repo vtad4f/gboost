@@ -203,7 +203,7 @@ mexFunction (int nlhs, mxArray *plhs[],
 			/* Copy from each single row into the large matrix, reverse row
 			 * order.
 			 */
-			for (int i = 0 ; i < cols ; ++i)
+			for (unsigned int i = 0 ; i < cols ; ++i)
 				ass[i*mvs.count+drow] = row[i];
 
 			mv_chain* tbd = cur;
@@ -249,7 +249,7 @@ convert_mat_to_graph (const mxArray* par, int directed)
 	uint32_T* nmat = (uint32_T*) mxGetPr (nodelabels);
 	unsigned int nodes = mxGetM (nodelabels);
 	for (unsigned int i = 0 ; i < nodes ; ++i) {
-		ed.InsertNode ((void *) nmat[i]);
+		ed.InsertNode (reinterpret_cast<void*>(nmat[i]));
 #ifdef	DEBUG
 		mexPrintf ("inserting node %d with label %d\n", i, nmat[i]);
 #endif
@@ -263,7 +263,9 @@ convert_mat_to_graph (const mxArray* par, int directed)
 	for (unsigned int i = 0 ; i < edgecount ; ++i) {
 		unsigned int from = emat[i+0*edgecount];
 		unsigned int to = emat[i+1*edgecount];
+#ifdef	DEBUG
 		unsigned int elabel = emat[i+2*edgecount];
+#endif
 
 		/* Collect all labels
 		 */

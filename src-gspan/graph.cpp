@@ -312,8 +312,8 @@ void Graph::check (void)
 			it != (*this)[from].edge.end (); ++it)
 		{
 			//mexPrintf ("   check edge from %d to %d, label %d\n", it->from, it->to, it->elabel);
-			assert (it->from >= 0 && it->from < size ());
-			assert (it->to >= 0 && it->to < size ());
+			assert (it->from >= 0 && static_cast<size_t>(it->from) < size ());
+			assert (it->to >= 0 && static_cast<size_t>(it->to) < size ());
 		}
 	}
 }
