@@ -2,6 +2,8 @@
 #ifndef __mexlib_h__
 #define __mexlib_h__
 
+#include <cstddef>
+
 #define mxREAL 8
 #define mxCOMPLEX 16
 

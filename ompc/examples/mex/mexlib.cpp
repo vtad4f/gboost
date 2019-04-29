@@ -77,17 +77,17 @@ void __del_mxMem(mxMem* _m)
     delete _m;
 }
 
-static const unsigned long __nan[2]={0xffffffff, 0x7fffffff};
+static const unsigned long _nan[2]={0xffffffff, 0x7fffffff};
 double mxGetNaN()
 {
-    //return *(double*)__nan;
-    return *(double*)&__nan;
+    //return *(double*)_nan;
+    return *(double*)&_nan;
 }
 
 int mxIsNaN(const double x)
 {
     const unsigned long *p = (const unsigned long*)(&x);
-    return __nan[0] == p[0] && __nan[1] == p[1];
+    return _nan[0] == p[0] && _nan[1] == p[1];
 }
 
 void mexErrMsgTxt(const char* _str_err)
