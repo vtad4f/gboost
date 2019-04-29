@@ -2,24 +2,26 @@
 
 #pragma once
 
+#include "mex/mex.h" // from ompc
+
 #include <cassert>
 #include <string>
-#include <vector>
+// #include <vector>
 
 
 typedef uint32_t uint32_T;
-struct Elem
-{
+// struct Elem
+// {
    
-};
-typedef std::vector<Elem> mxArray;
+// };
+// typedef std::vector<Elem> mxArray;
 
-enum SomeType
-{
-   mxUINT32_CLASS,
-   mxREAL,
-   mxDOUBLE_CLASS
-};
+// enum SomeType
+// {
+   // mxUINT32_CLASS,
+   // mxREAL,
+   // mxDOUBLE_CLASS
+// };
 
 template <class... T>
 inline void mexPrintf(const std::string&, T... args);
@@ -35,10 +37,10 @@ inline bool mxIsStruct(const mxArray*);
 inline bool mxIsCell(const mxArray*);
 inline void mxSetCell(const mxArray*, int, const mxArray*);
 inline void mxDestroyArray(const mxArray*);
-inline uint32_t* mxGetPr(const mxArray *);
-inline unsigned int mxGetScalar(const mxArray *);
-inline unsigned int mxGetM(const mxArray *);
-inline unsigned int mxGetN(const mxArray *);
+// inline uint32_t* mxGetPr(const mxArray *);
+// inline unsigned int mxGetScalar(const mxArray *);
+// inline unsigned int mxGetM(const mxArray *);
+// inline unsigned int mxGetN(const mxArray *);
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -176,38 +178,38 @@ void mxDestroyArray(const mxArray*)
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-uint32_t* mxGetPr(const mxArray *)
-{
-   return nullptr;
-}
+// uint32_t* mxGetPr(const mxArray *)
+// {
+   // return nullptr;
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-unsigned int mxGetScalar(const mxArray *)
-{
-   return 0;
-}
+// unsigned int mxGetScalar(const mxArray *)
+// {
+   // return 0;
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-unsigned int mxGetM(const mxArray *)
-{
-   return 0;
-}
+// unsigned int mxGetM(const mxArray *)
+// {
+   // return 0;
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-unsigned int mxGetN(const mxArray *)
-{
-   return 0;
-}
+// unsigned int mxGetN(const mxArray *)
+// {
+   // return 0;
+// }
 

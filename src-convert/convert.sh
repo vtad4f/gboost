@@ -17,6 +17,7 @@ function _RunPyExe
 {
    local py_exe
    py_exe=$(_GetPyExe) || return 1
+   echo $(_GetPyExe) "$@"
    $py_exe "$@" ; return $?
 }
 
@@ -42,7 +43,7 @@ done
 cd ../temp
 
 # Pre processing
-_PrintRun _RunPyExe ../fix.py pre $METHOD *.m # Additional changes are necessary
+_RunPyExe ../fix.py pre $METHOD *.m # Additional changes are necessary
 
 # Convert the files
 if [[ $METHOD == 'rename' ]]; then
@@ -58,13 +59,13 @@ elif [[ $METHOD == 'ompc' ]]; then
    for mpath in *.m; do
       pypath=$(basename $mpath .m).py
       ompc_dir=../../ompc/
-      _PrintRun _RunPyExe $ompc_dir/examples/translate.py $mpath > $pypath #2> /dev/null
-      _PrintRun _RunPyExe $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
+      _RunPyExe $ompc_dir/examples/translate.py $mpath > $pypath #2> /dev/null
+      _RunPyExe $ompc_dir/ompc/ompcply.py $mpath > $pypath #2> /dev/null
    done
 fi
 
 # Post processing
-_PrintRun _RunPyExe ../fix.py post $METHOD *.py # Additional changes are necessary
+_RunPyExe ../fix.py post $METHOD *.py # Additional changes are necessary
 _PrintRun sed -i 's/\r$//' *.py # Remove \r from newlines that python adds on windows
 
 # Move the files

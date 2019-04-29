@@ -47,20 +47,26 @@ set (SRC_GRAPHMATCH
    graphmatch.cpp
 )
 
-set (SRC_MEX_REPLACEMENT
+set (SRC_MY_MEX
    ../src-my-mex/mex.h
 )
 
+set (SRC_OMPC_MEX
+   ../ompc/examples/mex/mex.h
+   ../ompc/examples/mex/mexlib.h
+   ../ompc/examples/mex/mexlib.cpp
+)
 
 project(graphmatch)
 add_library(graphmatch SHARED
    ${SRC_GRAPHMATCH}
-   ${SRC_MEX_REPLACEMENT}
+   ${SRC_MY_MEX}
+   ${SRC_OMPC_MEX}
 )
 include_directories(graphmatch
-   .
    vflib-2.0/inc/
    ../src-my-mex/
+   ../ompc/examples/
 )
 set_target_properties(graphmatch PROPERTIES COMPILE_OPTIONS "-Wall" "--std=c++11" "-g")
 
