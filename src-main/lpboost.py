@@ -70,7 +70,7 @@ def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, b
    #       [Y, Yreal] = cfun (X), Yreal is optional.
    #
    #    (optional) GY: The (my_size(X,1),n) array of classifier responses, where the
-   #       (i,j).Tth element encodes the response of subclassifier j on sample i.
+   #       (i,j)'th element encodes the response of subclassifier j on sample i.
    
    # Set default maximum number of columns to add in one iteration
    if nargin < 7 or my_isempty(max_col):
@@ -103,9 +103,9 @@ def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, b
       u = array([ (1/l1) * 0.5 * ones((l1,1)) ])
    #end
    
-   alpha=array([])   # The classifier weights
-   H=array([])      # The hypothesis functions
-   HI=array([])      # The hypothesis information
+   alpha=matrix([])   # The classifier weights
+   H=matrix([])      # The hypothesis functions
+   HI=matrix([])      # The hypothesis information
    Ytrain=zeros((l,1))
    rho=array([ 0, 0 ])
    
@@ -226,9 +226,9 @@ def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, b
    #end
    
    # Output classifier structure
-   classifier=array([])
+   classifier=matrix([])
    classifier.alpha = alpha
-   classifier.H = H
+   #classifier.H = H # TODO - can't set attribute
    classifier.HI = HI
    classifier.Ytrain = Ytrain
    classifier.Ytrain[I] = Ytrain
@@ -281,7 +281,7 @@ def cfun(X=None, classifier=None, **kwargs):
    
    # Compute the real classification outputs as weighted sum of the individual
    # classifiers.
-   Yreal=array([])
+   Yreal=matrix([])
    if nargout >= 3:
       GY = zeros(n,len(classifier.alpha))
    #end

@@ -47,7 +47,7 @@ def findhypothesis_graph(X=None, Y=None, u=None, beta=None, max_col=None, htype=
    else:
       h={}
       for i in range(1, len(subg)+1):
-         h[i-1]=array([])
+         h[i-1]=matrix([])
          h[i-1].h = lambda G, **kwargs: graph_stump_classifier (G, subg[i-1], ybase[i-1], htype)
          h[i-1].hi = subg[i-1]
          h[i-1].GY = GY[:,i-1]   # subgraph response on training data
@@ -74,7 +74,7 @@ def graph_stump_classifier(G=None, subg=None, ybase=None, htype=None, **kwargs):
          if count > 0:
             y[i-1] = ybase
          else:
-            y[i-1] = 0   # Output zero in case pattern wasn.Tt found
+            y[i-1] = 0   # Output zero in case pattern wasn't found
          #end
       # Complementary-closed classifier that can return negative outputs for
       # 2-class LPBoosting.

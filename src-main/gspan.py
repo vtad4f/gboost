@@ -3,12 +3,12 @@ from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../ompc/examples/mex'))
-import mex
-mexgspan = mex.mexFunc('gspan')
+#import mex
+#mexgspan = mex.mexFunc('gspan') # TODO - there seems to be a seg fault
 from my_src import *
 def gspan(G=None, minsup=None, size_req=None, boostY=None, boostWeights=None, boostTau=None, boostN=None, boostMax=None, boostType=None, **kwargs):
    nargin, nargout = my_arg_reader(G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax, boostType, **kwargs)
-   
+   return array([]), array([]), array([]) # TODO - load mex gspan dll
    
    # gSpan frequent graph substructure algorithm.
    #   and
@@ -71,8 +71,8 @@ def gspan(G=None, minsup=None, size_req=None, boostY=None, boostWeights=None, bo
    #   count: (1,p) cellarray of [ -1, 1 ], giving the classifiers h_[<subg>,<subgY>].
    #
    #   (optional) GY: (n,p) double array giving individual counts for each
-   #       subgraph/graph pair.  At (i,j) the number of counts of the j.Tth
-   #       subgraph found in the i.Tth graph is recorded.  This takes no
+   #       subgraph/graph pair.  At (i,j) the number of counts of the j'th
+   #       subgraph found in the i'th graph is recorded.  This takes no
    #       additional computation time to record.
    #
    
