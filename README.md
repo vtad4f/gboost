@@ -11,19 +11,23 @@ Description
 
 See parent repository for original description. The original .m files have been preserved in the repo under src-convert/original-m. With the exception of a few indentation fixes (python is sensitive) they should be untouched.
 
-This repo has become a matlab to python conversion utility more thatn anything. Once the original matlab code is fully converted I would recommend breaking out the conversion script(s) into a new repo (something like m2py). I believe this is worthwhile because at least for now there don't seem to be fully-implemented conversion scripts.
+This repo has become a matlab to python conversion utility more than anything. Once the original matlab code is fully converted I would recommend breaking out the conversion script(s) into a new repo (something like m2py). I believe this is worthwhile because at least for now there don't seem to be fully-implemented conversion scripts - including the scripts in this repo, which are still a work in progress.
 
-The two closest implementations I've seen of matlab to python conversion code are smop and ompc. I tried smop first once I realized how time consuming writing my own utility would be. It does pip install successfully and does an ok job of swapping out function definitions, but watch out for concat and a few other pitfalls. It becomes quickly apparent how many additional functions have to be defined in addition to what comes with the smoplib import.
+The two closest implementations I've seen of matlab to python conversion code are smop and ompc. I tried smop first once I realized how time consuming writing my own utility would be. It does pip install successfully and does an okay job of swapping out function definitions, but watch out for concat and a few other pitfalls. It becomes quickly apparent how many additional functions have to be defined in addition to what comes with the smoplib import.
 
-Next I tried ompc. I went ahead and forked my own vtad4f version of it (see Makefile) because I thought the mex replacement code could be useful. The author spoke highly of it, and I thought it would be a better starting point than nothing. That being said, that last time I hooked it up I got a seg fault. 
+Next I tried ompc. I went ahead and forked my own vtad4f version of it (see Makefile) because I thought the mex replacement code could be useful. The author spoke highly of it, and I thought it would be a better starting point than nothing. That being said, python loading and executing c++ hasn't been a smooth road thus far. As you can see from the my-mex folder there is still more implementation to fill in before matlab is completely replaced.
+
+A very helpful module is pylab (part of matplotlib). Thanks to using it, a lot less regex has been necessary in the conversion. See a comment in the code next to the import with a small article on the topic.
+
+One final complication with this repo: cvx. There is a pycvx module that looks like a plausible replacement. Again, see a comment in the code next to what looks to be a useful stack overflow post on the topic.
 
 
 Authors
 -------
 <a name="authors"/>
 
-* Vincent Allen <vtad4f@mst.edu>
-* Roland Kwitt <roland.kwitt@sbg.ac.at>
+* Vincent Allen <vtad4f@mst.edu> (begin converting from matlab to python)
+* Roland Kwitt <roland.kwitt@sbg.ac.at> (minor changes)
 * Sebastian Nowozin <sebastian.nowozin@tuebingen.mpg.de>
   * Matlab wrappers, LPBoost, modifications to gSpan implementation
 * Taku Kudo <taku@google.com>
@@ -115,52 +119,22 @@ Documentation
 -------------
 <a name="doc"/>
 
-The source code is well documented, but here is a list of the most important
-parts.
+See parent repo for a description of original matlab and c++ files. As for the files in this repo,
 
-`gspan.m` is the Matlab side interface of Taku's gSpan code.  It can perform
-both frequent subgraph mining as well as weighted subgraph mining.  The first
-is useful for data mining purposes, while the second is used in graph
-boosting.
+`src-main` is the output directory of the conversion scripts. There are also a few miscellaneous support scripts and a .mat file in the folder.
 
-`findhypothesis_graph.m` is the interface between LPBoost and the weighted graph
-mining algorithm (gSpan).  The duty of `findhypothesis_graph` is to create
-decision stumps which correspond to the most violated constraint in the LP
-dual (column-generation).  In fact, you can use the included `lpboost1d5.m` with
-any other decision stump, you only need to write a suitable `findhypothesis_*.m`
-function.
+`src-convert` is where the heavy lifting happens. convert.sh is called as part of the root make operation. The fix.py script is executed before and after (pre/post) the conversion method selected at the top of the sh file. For a while it was smop, but then I eventually realized it would be faster to start from scratch. I.e. the current conversion method is simply to rename the .m files to .py and run the fix script against the new files.
 
-`lpboost.m` is an implementation of 1-class, 2-class and "1.5-class"
-nu-LPBoosting.  The 1-class and 2-class formulations are explained in
-[\[Demiriz2002\]](#ref), the 1.5-class formulation learns a 1-class classifier but also
-takes into account negative samples.
+`src-convert/settings` Why use json? An attempt to provide a more generic, data driven approach to converting the matlab files. If you wish to run the conversion on a completely different set of matlab files, at the moment you would put the different files in the original-m folder and starting adding json files (keep common.json though). 'pre' sections in the json happen before the conversion method (e.g. smop) runs and then the 'post' sections are used to clean up afterwards.
 
-`graphmatch.mex*` is a wrapper around VFLib to perform subgraph-graph
-isomorphism matching.  It can output all matches and is used for the testing
-on unlabeled samples.  It can match both directed and undirected graphs.
-
-`mexgspan.mex*` is the gSpan Matlab wrapper.
-
-`rocscore.m` is a simple function calculating the ROC AUC and ROC EER score as
-well as the ROC curve itself.
 
 Demonstration
 -------------
 <a name="demo"/>
 
-Start Matlab and go to the bin/ directory.  Running the example.m script will
-guide you through the training of a graph boosting classifier for a small
-molecule example set. Assuming that your CVX install is at `/Software/cvx/`,
-and you checked out gboost at `/Software/gboost`, run
+The parent repo came with an example.m file, and the equivalent example.py (now in src-main) is still the primary means of executing the code. The new py file reads in test data from the .mat file just like the .m file did.
 
-```matlab
-cd '/Software/cxv'
-cvx_setup
-cd '/Software/gboost'
-example
-```
-
-If you have any questions, please feel free to email the first author.
+If you wish to exercise the conversion scripts (m to py) on a regular basis, just use setup.sh. In addition to running pip installs it will run cmake and make and run example.py. To speed things up pass optional arguments [y/n] [y/n] to the setup script to indicate whether or not you want to make and run respectively.
 
 References
 ----------
