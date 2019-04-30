@@ -36,7 +36,7 @@ def rocscore(Yreal=None, YTrue=None, **kwargs):
    
       # Check if there is more than one sample qualifying with the same value:
       similar=0
-      for j in (i+(1-1):(len-1)(dsorted):
+      for j in range((i+1), len(dsorted)+1):
          if abs(dsorted(i)-dsorted(j)) < 1e-9:
             similar=similar+1
          else:

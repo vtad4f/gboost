@@ -88,7 +88,7 @@ def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, b
          X=X[I,:]
       #end
    else:
-      I=range(1, my_size(Y,1)+1)
+      I=range(1-1, my_size(Y,1))
    #end
    
    l1 = len(find(Y >= 0))
