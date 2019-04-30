@@ -1,5 +1,10 @@
 from __future__ import division
 from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../ompc/examples/mex'))
+import mex
+mexgspan = mex.mexFunc('gspan')
 from my_src import *
 def gspan(G=None, minsup=None, size_req=None, boostY=None, boostWeights=None, boostTau=None, boostN=None, boostMax=None, boostType=None, **kwargs):
    nargin, nargout = my_arg_reader(G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax, boostType, **kwargs)

@@ -4,15 +4,14 @@
 
 #include "mex/mex.h" // from ompc
 
+#include <iostream>
 #include <cassert>
-#include <string>
 
 
 typedef uint32_t uint32_T;
 
 template <class... T>
-inline void mexPrintf(const std::string&, T... args);
-inline void mexErrMsgTxt(const std::string&);
+inline void mexPrintf(const char*, T... args);
 inline void mxSetField(const mxArray*, int, const std::string&, const mxArray*);
 inline mxArray* mxGetField(const mxArray*, int, const std::string&);
 inline mxArray* mxCreateStructMatrix(int, int, int, const char**);
@@ -23,27 +22,16 @@ inline bool mxIsUint32(const mxArray*);
 inline bool mxIsStruct(const mxArray*);
 inline bool mxIsCell(const mxArray*);
 inline void mxSetCell(const mxArray*, int, const mxArray*);
-inline void mxDestroyArray(const mxArray*);
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// @brief   TODO_COMMENT
+// @brief   Print the output message
 //
 ////////////////////////////////////////////////////////////////////////////////
 template <class... T>
-void mexPrintf(const std::string&, T... args)
+void mexPrintf(const char* msg, T... args)
 {
-
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// @brief   TODO_COMMENT
-//
-////////////////////////////////////////////////////////////////////////////////
-void mexErrMsgTxt(const std::string&)
-{
-   
+   std::cout << msg << std::endl; // TODO - include args in message
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +41,7 @@ void mexErrMsgTxt(const std::string&)
 ////////////////////////////////////////////////////////////////////////////////
 void mxSetField(const mxArray*, int, const std::string&, const mxArray*)
 {
-   
+   std::cout << "mxSetField - TODO Implement" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +51,7 @@ void mxSetField(const mxArray*, int, const std::string&, const mxArray*)
 ////////////////////////////////////////////////////////////////////////////////
 mxArray* mxGetField(const mxArray*, int, const std::string&)
 {
+   std::cout << "mxGetField - TODO Implement" << std::endl;
    return new mxArray;
 }
 
@@ -73,6 +62,7 @@ mxArray* mxGetField(const mxArray*, int, const std::string&)
 ////////////////////////////////////////////////////////////////////////////////
 mxArray* mxCreateStructMatrix(int, int, int, const char**)
 {
+   std::cout << "mxCreateStructMatrix - TODO Implement" << std::endl;
    return new mxArray;
 }
 
@@ -83,6 +73,7 @@ mxArray* mxCreateStructMatrix(int, int, int, const char**)
 ////////////////////////////////////////////////////////////////////////////////
 mxArray* mxCreateNumericMatrix(int, int, int, int)
 {
+   std::cout << "mxCreateNumericMatrix - TODO Implement" << std::endl;
    return new mxArray;
 }
 
@@ -93,6 +84,7 @@ mxArray* mxCreateNumericMatrix(int, int, int, int)
 ////////////////////////////////////////////////////////////////////////////////
 mxArray* mxCreateDoubleScalar(int)
 {
+   std::cout << "mxCreateDoubleScalar - TODO Implement" << std::endl;
    return new mxArray;
 }
 
@@ -103,6 +95,7 @@ mxArray* mxCreateDoubleScalar(int)
 ////////////////////////////////////////////////////////////////////////////////
 mxArray* mxCreateCellMatrix(int, int)
 {
+   std::cout << "mxCreateCellMatrix - TODO Implement" << std::endl;
    return new mxArray;
 }
 
@@ -111,8 +104,9 @@ mxArray* mxCreateCellMatrix(int, int)
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool mxIsUint32(const mxArray*)
+bool mxIsUint32(const mxArray* pArray)
 {
+   std::cout << "mxIsUint32 - TODO Implement" << std::endl;
    return false;
 }
 
@@ -121,8 +115,9 @@ bool mxIsUint32(const mxArray*)
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool mxIsStruct(const mxArray*)
+bool mxIsStruct(const mxArray* pArray)
 {
+   std::cout << "mxIsUint32 - TODO Implement" << std::endl;
    return false;
 }
 
@@ -131,8 +126,9 @@ bool mxIsStruct(const mxArray*)
 // @brief   TODO_COMMENT
 //
 ////////////////////////////////////////////////////////////////////////////////
-bool mxIsCell(const mxArray*)
+bool mxIsCell(const mxArray* pArray)
 {
+   std::cout << "mxIsUint32 - TODO Implement" << std::endl;
    return false;
 }
 
@@ -143,16 +139,6 @@ bool mxIsCell(const mxArray*)
 ////////////////////////////////////////////////////////////////////////////////
 void mxSetCell(const mxArray*, int, const mxArray*)
 {
-   
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// @brief   TODO_COMMENT
-//
-////////////////////////////////////////////////////////////////////////////////
-void mxDestroyArray(const mxArray*)
-{
-   
+   std::cout << "mxSetCell - TODO Implement" << std::endl;
 }
 

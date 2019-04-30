@@ -2,11 +2,13 @@
 from numpy import frombuffer, dtype, ndarray, array, c_
 from weakref import WeakKeyDictionary, ref
 from ctypes import *
+import os
+import sys
 
 freeers = {}
 def free(addr):
     global freeers
-    #print "Freeing ... ",  addr
+    #print( "Freeing ... ",  addr)
     cdll.msvcrt.free(addr)
     del freeers[addr]
 
@@ -57,12 +59,12 @@ class mxArray(Structure):
                 self.dtype = 0
                 self.flags = 0
             else:
-                print '!!!!! Converting %s to ndarray'%type(_a)
+                print('!!!!! Converting {0} to ndarray'.format(type(_a)))
                 _a = array(_a).astype('f8')
                 
                 if _a.ndim < 2:
                     _a = c_[_a].T
-                print _a
+                print(_a)
                 sz = reduce(lambda x,y: x*y, _a.shape, 1)
                 data = (local_ctype*sz)()
                 for i in range(sz):
@@ -85,14 +87,14 @@ class mxArray(Structure):
             self.dtype = 6
             self.flags = 0
         else:
-            print '====>'
-            print 'Converting %s to double'%_a.dtype
+            print( '====>')
+            print( 'Converting {0} to double'.format(_a.dtype))
             _a = _a.astype('f8')
-            print _a
+            print( _a)
             
             if _a.ndim < 2:
                 _a = c_[_a].T
-            print _a
+            print( _a)
             sz = reduce(lambda x,y: x*y, _a.shape, 1)
             data = (local_ctype*sz)()
             for i in range(sz):
@@ -118,25 +120,41 @@ class mxArray(Structure):
         return ret
  
 def mexFunc(fname,debug=False):
-    if debug:
-        fname += '_d'
-    try:
-        f = cdll.LoadLibrary('%s.dll'%fname).mexFunction
-    except:
-        f = cdll.LoadLibrary('%s.dll'%pjoin(__pth,fname)).mexFunction
+    """
+        BRIEF  Load the DLL and return an accessor for its exported mexFunction
+    """
+    suffix = '_d' if debug else ''
+    extension = 'dll' if 'win' in sys.platform else 'so'
+    
+    # Get a handle to the function
+    f = None
+    paths = []
+    for name in [fname, pjoin(__pth, fname)]:
+        for prefix in ['', 'cyg']:
+           path = '{0}{1}{2}.{3}'.format(prefix, name, suffix, extension)
+           paths.append(path)
+           if os.path.isfile(path):
+               f = cdll.LoadLibrary(path).mexFunction
+               break
+               
+    if f is None:
+        raise Exception("Expected one of these to exist: " + str(paths))
+        
     f.restype = None
     f.argtypes = (c_int, POINTER(POINTER(mxArray)), c_int, POINTER(POINTER(mxArray)))
     def func(*args):
         nargout = get_nargout()
         nargin = len(args)
-        print nargin, args, nargout
+        print( nargin, args, nargout)
         plhs = (POINTER(mxArray)*nargout)()
         prhs = (POINTER(mxArray)*nargin)(*[ pointer(mxArray(x)) for x in args ])
         f(nargout, plhs, nargin, prhs)
         if nargout == 1:
             return plhs[0].contents.release_data()
-        print plhs
+        print( plhs)
         return tuple([ x.contents.release_data() for x in plhs ])
+        
+        
     return func
 
 #upConv = mexFunc('upConv')
@@ -147,20 +165,20 @@ def test():
     im = c_[ 0., 0., 0.107517, 0.074893, -0.46955, 0., 0.46955, -0.074893, -0.107517, 0., 0.]
     filt = c_[ 0.08838835, 0.35355339, 0.53033009, 0.35355339, 0.08838835]
     a = upConv(im, filt,'reflect1',r_[1, 2])
-    print 'Result is', a
+    print( 'Result is', a)
 
 def test():
     from numpy import arange, concatenate
     derivate = mexFunc('derivate')
-    print derivate(c_[arange(10.0)**2])
-    print derivate(c_[arange(10.0)**2,arange(10.0)])
+    print( derivate(c_[arange(10.0)**2]))
+    print( derivate(c_[arange(10.0)**2,arange(10.0)]))
 
 def test(): 
     from pylab import rand, plot, show
     lineintc = mexFunc('lineintc')
     x1, x2 = rand(2,10),rand(2,10)
     a = lineintc(x1, x2)
-    print a.T
+    print( a.T)
 
 if __name__ == "__main__":
     test()
