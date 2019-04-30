@@ -1,46 +1,29 @@
-gboost - Matlab graph boosting package
+
+gboost - ~~Matlab~~ Python graph boosting package
 ======================================
 
-Version 0.1.1, 11th July 2007 (+ minor adjustments)
-
-**Original website:** http://www.nowozin.net/sebastian/gboost/
-
-
-Contents
---------
-
-* [Description](#description)
-* [Authors](#authors)
-* [Licence](#lic)
-* [Installation](#install)
-* [Documentation](#doc)
-* [Demonstration](#demo)
-* [References](#ref)
+**Forked from:** https://github.com/rkwitt/gboost/
 
 
 Description
 -----------
 <a name="description"/>
 
-This package contains a Matlab interface to various libraries in order to
-perform graph boosting [\[Kudo2004\]](#ref) and frequent subgraph mining [\[Yan2002\]](#ref).
-Graph boosting learns a classification function on discrete-labeled undirected
-connected graphs.  Frequent subgraph mining determines subgraphs with a given
-minimum support.
+See parent repository for original description. The original .m files have been preserved in the repo under src-convert/original-m. With the exception of a few indentation fixes (python is sensitive) they should be untouched.
 
-Discrete-labeled undirected connected graphs are a suitable representation for
-problems where samples can be represented by individual parts (vertices) and
-their relationships (edges).  Graph boosting has been particularly successful
-for the classification of chemical molecules.
+This repo has become a matlab to python conversion utility more thatn anything. Once the original matlab code is fully converted I would recommend breaking out the conversion script(s) into a new repo (something like m2py). I believe this is worthwhile because at least for now there don't seem to be fully-implemented conversion scripts.
 
-While graph boosting can also be used for regression this package does *not*
-implement a regressor.
+The two closest implementations I've seen of matlab to python conversion code are smop and ompc. I tried smop first once I realized how time consuming writing my own utility would be. It does pip install successfully and does an ok job of swapping out function definitions, but watch out for concat and a few other pitfalls. It becomes quickly apparent how many additional functions have to be defined in addition to what comes with the smoplib import.
+
+Next I tried ompc. I went ahead and forked my own vtad4f version of it (see Makefile) because I thought the mex replacement code could be useful. The author spoke highly of it, and I thought it would be a better starting point than nothing. That being said, that last time I hooked it up I got a seg fault. 
 
 
 Authors
 -------
 <a name="authors"/>
 
+* Vincent Allen <vtad4f@mst.edu>
+* Roland Kwitt <roland.kwitt@sbg.ac.at>
 * Sebastian Nowozin <sebastian.nowozin@tuebingen.mpg.de>
   * Matlab wrappers, LPBoost, modifications to gSpan implementation
 * Taku Kudo <taku@google.com>
@@ -122,20 +105,10 @@ Installation
 ============
 <a name="install"/>
 
-Prequisites
-     - Linux, x86, either 32 bit or 64 bit
-     - Matlab R14 (also tested with 2012b)
-     - CVX Matlab Optimization Kit, available under the GNU General Public
-       License at http://www.stanford.edu/~boyd/cvx/
-
-The program has been tested on Debian GNU/Linux, x86 32 bit and 64 bit
-architectures with Matlab R14SP2, SP3, R2006a, and most recently on 
-Ubuntu 12.04 (64bit) running R2012a.
-
-If you want to modify the source code, you have to modify Makefile.options in
-the root directory to setup your Matlab path.  Afterwards, a simple "make" in
-the root directory should build both the graph matching wrapper as well as the
-gSpan graph mining.
+Run setup.sh
+* Pip installs for smop, matplotlib, and pycvx will happen first
+* Linux  seems to be necessary for the pycvx pip install
+* Python 3 is currently a requirement as well (I went with the @ matrix multiplication operator)
 
 
 Documentation
