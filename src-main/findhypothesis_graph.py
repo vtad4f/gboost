@@ -4,6 +4,7 @@ from gspan import gspan
 from my_src import *
 def findhypothesis_graph(X=None, Y=None, u=None, beta=None, max_col=None, htype=None, **kwargs):
    nargin, nargout = my_arg_reader(X, Y, u, beta, max_col, htype, **kwargs)
+   h = None
    
    
    # Graph boosting stump generator
@@ -48,7 +49,7 @@ def findhypothesis_graph(X=None, Y=None, u=None, beta=None, max_col=None, htype=
       h={}
       for i in range(1, len(subg)+1):
          h[i-1]=matrix([])
-         h[i-1].h = lambda G, **kwargs: graph_stump_classifier (G, subg[i-1], ybase[i-1], htype)
+         h[i-1].h = lambda G, **kwargs: graph_stump_classifier (G, subg[i-1], ybase[i-1], htype, **kwargs)
          h[i-1].hi = subg[i-1]
          h[i-1].GY = GY[:,i-1]   # subgraph response on training data
          h[i-1].GY[find(h[i-1].GY)]=1
@@ -63,6 +64,7 @@ def findhypothesis_graph(X=None, Y=None, u=None, beta=None, max_col=None, htype=
    
 def graph_stump_classifier(G=None, subg=None, ybase=None, htype=None, **kwargs):
    nargin, nargout = my_arg_reader(G, subg, ybase, htype, **kwargs)
+   y = None
    
    
    y=zeros(len(G),1)

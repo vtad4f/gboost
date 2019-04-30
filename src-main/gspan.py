@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../ompc/examples/mex'))
 from my_src import *
 def gspan(G=None, minsup=None, size_req=None, boostY=None, boostWeights=None, boostTau=None, boostN=None, boostMax=None, boostType=None, **kwargs):
    nargin, nargout = my_arg_reader(G, minsup, size_req, boostY, boostWeights, boostTau, boostN, boostMax, boostType, **kwargs)
+   subg, count, GY = None, None, None
    return array([]), array([]), array([]) # TODO - load mex gspan dll
    
    # gSpan frequent graph substructure algorithm.
@@ -130,10 +131,11 @@ def gspan(G=None, minsup=None, size_req=None, boostY=None, boostWeights=None, bo
    for i in range(1, len(subg)+1):
       subg[i-1].edges = unique (subg[i-1].edges, 'rows')
    #end
-   return subg, count, GY
+   return [subg, count, GY][:nargout]
    
 def verifygraph(G=None, **kwargs):
    nargin, nargout = my_arg_reader(G, **kwargs)
+   valid, reason = None, None
    return True, 'Graph is ok.' # TODO - Python equivalent of nodelabels and edges?
    
    # Verify if the directed graph G is valid, that is::
@@ -185,5 +187,5 @@ def verifygraph(G=None, **kwargs):
       reason = 'Graph is ok.'
    #end
    valid = 1
-   return valid, reason
+   return [valid, reason][:nargout]
    

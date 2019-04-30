@@ -4,6 +4,7 @@ from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/
 from my_src import *
 def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, boosting_type=None, max_col=None, **kwargs):
    nargin, nargout = my_arg_reader(X, Y, conv_epsilon, nu, findhypothesis_1, boosting_type, max_col, **kwargs)
+   classifier, cfunout, GY = None, None, None
    
    
    # 1.5/2-class LP Boosting,
@@ -242,17 +243,18 @@ def lpboost(X=None, Y=None, conv_epsilon=None, nu=None, findhypothesis_1=None, b
    
    # Output the combined, weighted hypothesis.
    if nargout >= 2:
-      cfunout = lambda X, **kwargs: cfun (X, classifier)
+      cfunout = lambda X, **kwargs: cfun (X, classifier, **kwargs)
    #end
    
    # If desired, output the classifier responses as well.
    if nargout >= 3:
       GY = HM
    #end
-   return classifier, cfunout, GY
+   return [classifier, cfunout, GY][:nargout]
    
 def cfun(X=None, classifier=None, **kwargs):
    nargin, nargout = my_arg_reader(X, classifier, **kwargs)
+   Yout, Yreal, GY = None, None, None
    
    
    # Combined boosting classifier
@@ -302,6 +304,6 @@ def cfun(X=None, classifier=None, **kwargs):
    
    Yout=-ones((n,1))
    Yout[find(Yreal >= classifier.class_thresh)]=1
-   return Yout, Yreal, GY
+   return [Yout, Yreal, GY][:nargout]
    
    

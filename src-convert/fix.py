@@ -154,14 +154,15 @@ class File(object):
             matches = File.FCN_DEF.findall(line)
             if matches:
                ret, name, args = matches[0]
+               ret_none = "{0} = {1}".format(ret, ', '.join(['None']*len(ret.split(', '))))
                args_none = ', '.join(map('{0}=None'.format, args.split(', ')))
                args += ', **kwargs'
                args_none += ', **kwargs'
                prefix = prefixes[name] if name in prefixes else '' # configurable
-               lines[i] = 'def {0}({1}):\n   {2}({3})\n   {4}'.format(
-                  name, args_none, "nargin, nargout = my_arg_reader", args, prefix)
+               lines[i] = 'def {0}({1}):\n   {2}({3})\n   {4}\n   {5}'.format(
+                  name, args_none, "nargin, nargout = my_arg_reader", args, ret_none, prefix)
                if pending_ret:
-                  lines[empty_line] = '   return ' + pending_ret
+                  lines[empty_line] = '   return ' + ('[{0}][:nargout]'.format(pending_ret) if len(pending_ret.split(', ')) > 1 else pending_ret)
                pending_ret = ret
             elif pending_ret:
                lines[i] = '   ' + line
@@ -170,9 +171,9 @@ class File(object):
             elif empty_line is None:
                empty_line = i
          if pending_ret:
-            lines[empty_line] = '   return ' + pending_ret
+            lines[empty_line] = '   return ' + ('[{0}][:nargout]'.format(pending_ret) if len(pending_ret.split(', ')) > 1 else pending_ret)
          self.contents = '\n'.join(lines)
-      
+         
    def _AddNargoutToFcnCalls(self, fix_functions):
       """
          BRIEF  Fix the function call; The number of returns may vary...

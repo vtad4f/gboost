@@ -3,6 +3,7 @@ from pylab import * # https://stsievert.com/blog/2015/09/01/matlab-to-python/
 from my_src import *
 def rocscore(Yreal=None, YTrue=None, **kwargs):
    nargin, nargout = my_arg_reader(Yreal, YTrue, **kwargs)
+   rocauc, eer, roccurve = None, None, None
    
    
    # Compute the ROC AUC (area under curve) score, the ROC EER (equal error rate)
@@ -78,5 +79,5 @@ def rocscore(Yreal=None, YTrue=None, **kwargs):
       width=roccurve(p,1)-roccurve(p-1,1)
       rocauc=rocauc + width @ (roccurve(p-1,2) + ((roccurve(p,2)-roccurve(p-1,2))/2))
    #end
-   return rocauc, eer, roccurve
+   return [rocauc, eer, roccurve][:nargout]
    
