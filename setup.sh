@@ -124,11 +124,11 @@ function _EvalArg
 #  @brief  Main execution
 #
 ################################################################################
-# ! _OsIsLinux && echo "Linux is required for pycvx to install" && exit 1
+! _OsIsLinux && echo "Linux is required for pycvx to install" && exit 1
 ! _IsPy3 && echo "Python 3 is required for the @ operator" && exit 2
 _PipInstall smop
 _PipInstall matplotlib
-#_PipInstall cvxpy # TODO - vs140 dependency on windows...
+_PipInstall cvxpy
 _EvalArg "$1" "make" && make
 _EvalArg "$2" "run" && cd src-main && _RunPyExe example.py
 
