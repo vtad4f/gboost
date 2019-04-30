@@ -1,4 +1,5 @@
 
+
 gboost - ~~Matlab~~ Python graph boosting package
 ======================================
 
@@ -9,7 +10,7 @@ Description
 -----------
 <a name="description"/>
 
-See parent repository for original description. The original .m files have been preserved in the repo under src-convert/original-m. With the exception of a few indentation fixes (python is sensitive) they should be untouched.
+See the parent repository for the original description. The .m files have been preserved in the repo under src-convert/original-m. With the exception of a few indentation fixes (python is sensitive) they should be untouched.
 
 This repo has become a matlab to python conversion utility more than anything. Once the original matlab code is fully converted I would recommend breaking out the conversion script(s) into a new repo (something like m2py). I believe this is worthwhile because at least for now there don't seem to be fully-implemented conversion scripts - including the scripts in this repo, which are still a work in progress.
 
@@ -20,6 +21,40 @@ Next I tried ompc. I went ahead and forked my own vtad4f version of it (see Make
 A very helpful module is pylab (part of matplotlib). Thanks to using it, a lot less regex has been necessary in the conversion. See a comment in the code next to the import with a small article on the topic.
 
 One final complication with this repo: cvx. There is a pycvx module that looks like a plausible replacement. Again, see a comment in the code next to what looks to be a useful stack overflow post on the topic.
+
+
+Installation
+============
+<a name="install"/>
+
+Run setup.sh
+* Pip installs for smop, matplotlib, and pycvx will happen first
+* Linux  seems to be necessary for the pycvx pip install
+* Python 3 is currently a requirement as well (I went with the @ matrix multiplication operator)
+
+
+Documentation
+-------------
+<a name="doc"/>
+
+See parent repo for a description of original matlab and c++ files. As for the files in this repo,
+
+`src-main` is the output directory of the conversion scripts. There are also a few miscellaneous support scripts and a .mat file in the folder.
+
+`src-convert` is where the heavy lifting happens. convert.sh is called as part of the root make operation. The fix.py script is executed before and after (pre/post) the conversion method selected at the top of the sh file. For a while it was smop, but then I eventually realized it would be faster to start from scratch. I.e. the current conversion method is simply to rename the .m files to .py and run the fix script against the new files.
+
+`src-convert/settings` Why use json? An attempt to provide a more generic, data driven approach to converting the matlab files. If you wish to run the conversion on a completely different set of matlab files, at the moment you would put the different files in the original-m folder and starting adding json files (keep common.json though). 'pre' sections in the json happen before the conversion method (e.g. smop) runs and then the 'post' sections are used to clean up afterwards.
+
+
+Demonstration
+-------------
+<a name="demo"/>
+
+The parent repo came with an example.m file, and the equivalent example.py (now in src-main) is still the primary means of executing the code. The new py file reads in test data from the .mat file just like the .m file did.
+
+If you wish to exercise the conversion scripts (m to py) on a regular basis, just use setup.sh. In addition to running pip installs it will run cmake and make and run example.py. To speed things up pass optional arguments [y/n] [y/n] to the setup script to indicate whether or not you want to make and run respectively.
+
+
 
 
 Authors
@@ -105,36 +140,6 @@ provisions above, a recipient may use your version of this file under either
 the MPL or the GNU General Public License, version 2.''
 ```
 
-Installation
-============
-<a name="install"/>
-
-Run setup.sh
-* Pip installs for smop, matplotlib, and pycvx will happen first
-* Linux  seems to be necessary for the pycvx pip install
-* Python 3 is currently a requirement as well (I went with the @ matrix multiplication operator)
-
-
-Documentation
--------------
-<a name="doc"/>
-
-See parent repo for a description of original matlab and c++ files. As for the files in this repo,
-
-`src-main` is the output directory of the conversion scripts. There are also a few miscellaneous support scripts and a .mat file in the folder.
-
-`src-convert` is where the heavy lifting happens. convert.sh is called as part of the root make operation. The fix.py script is executed before and after (pre/post) the conversion method selected at the top of the sh file. For a while it was smop, but then I eventually realized it would be faster to start from scratch. I.e. the current conversion method is simply to rename the .m files to .py and run the fix script against the new files.
-
-`src-convert/settings` Why use json? An attempt to provide a more generic, data driven approach to converting the matlab files. If you wish to run the conversion on a completely different set of matlab files, at the moment you would put the different files in the original-m folder and starting adding json files (keep common.json though). 'pre' sections in the json happen before the conversion method (e.g. smop) runs and then the 'post' sections are used to clean up afterwards.
-
-
-Demonstration
--------------
-<a name="demo"/>
-
-The parent repo came with an example.m file, and the equivalent example.py (now in src-main) is still the primary means of executing the code. The new py file reads in test data from the .mat file just like the .m file did.
-
-If you wish to exercise the conversion scripts (m to py) on a regular basis, just use setup.sh. In addition to running pip installs it will run cmake and make and run example.py. To speed things up pass optional arguments [y/n] [y/n] to the setup script to indicate whether or not you want to make and run respectively.
 
 References
 ----------
