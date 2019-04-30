@@ -130,7 +130,7 @@ def mexFunc(fname,debug=False):
     f = None
     paths = []
     for name in [fname, pjoin(__pth, fname)]:
-        for prefix in ['', 'cyg']:
+        for prefix in ['', 'cyg', 'lib']:
            path = '{0}{1}{2}.{3}'.format(prefix, name, suffix, extension)
            paths.append(path)
            if os.path.isfile(path):
